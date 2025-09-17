@@ -191,6 +191,8 @@ export default function BlogDetailPage({
           <Image
             src={blog.imageUrl}
             alt={blog.title}
+            width={800}
+            height={400}
             className="w-full h-64 md:h-96 object-cover rounded-3xl shadow-xl"
           />
         </motion.div>

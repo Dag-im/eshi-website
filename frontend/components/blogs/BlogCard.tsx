@@ -47,6 +47,7 @@ export default function BlogCard({
           <Image
             src={imageUrl}
             alt={title}
+            fill
             className="w-full h-full object-cover rounded-t-3xl transition-transform duration-300 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-[var(--color-avocado)]/30 transition-opacity duration-300 group-hover:opacity-60" />

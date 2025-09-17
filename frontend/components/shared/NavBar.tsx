@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -46,7 +47,14 @@ export default function Navbar() {
       <div className="flex justify-between items-center px-6 py-3">
         {/* Logo */}
         <div className="text-xl md:text-2xl font-bold text-[var(--color-rangitoto)]">
-          ESHI
+          <Image
+            src={'/eshi.png'}
+            alt="ESHI Consulting Logo"
+            width={75}
+            height={75}
+            priority
+            className="rounded-xl"
+          />
         </div>
 
         {/* Desktop Links */}

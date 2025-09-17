@@ -5,7 +5,7 @@ import Hero from '@/components/home/hero';
 import Services from '@/components/home/services';
 
 const heroBg = {
-  src: 'https://images.unsplash.com/photo-1708417135873-1e997cb491bc?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  src: '/hero-bg.png',
   alt: 'ESHI Consulting background',
 };
 

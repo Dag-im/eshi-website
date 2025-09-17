@@ -90,8 +90,8 @@ export default function ImpactSection() {
               <Card className="relative rounded-3xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
                 {/* Enhanced BorderBeam */}
                 <BorderBeam
-                  size={250}
-                  duration={4 + i * 2}
+                  size={150}
+                  duration={8 + i * 2}
                   colorFrom="var(--color-avocado)"
                   colorTo="var(--color-deco)"
                   borderWidth={2}
@@ -102,6 +102,7 @@ export default function ImpactSection() {
                     <Image
                       src={org.logo}
                       alt={`${org.name} logo`}
+                      fill
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-3"
                     />
                   </div>
