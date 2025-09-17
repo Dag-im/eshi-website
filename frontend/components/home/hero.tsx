@@ -16,7 +16,7 @@ interface HeroProps {
 
 export default function Hero({ bgImage }: HeroProps) {
   return (
-    <section className="relative w-full h-screen">
+    <section className="relative w-full h-screen pt-10">
       {/* Next.js Image background */}
       <Image
         src={bgImage.src}
