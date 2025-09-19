@@ -81,7 +81,7 @@ export default function Footer() {
 
       {/* Footer Bottom */}
       <div className="border-t border-[var(--color-albescent-white)]/20 mt-12 py-6 text-center text-sm text-[var(--color-albescent-white)]/70">
-        &copy; {new Date().getFullYear()} ESHI Consulting. All rights reserved.
+        &copy; {new Date().getFullYear()} ESHI Consultancy. All rights reserved.
       </div>
     </motion.footer>
   );

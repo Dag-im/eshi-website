@@ -5,7 +5,6 @@ import BentoGridSection from '@/components/about/BentoGridSection';
 import ClientsSection from '@/components/about/ClientsSection';
 import TeamSection from '@/components/about/TeamSection';
 import { AuroraText } from '@/components/magicui/aurora-text';
-import { Meteors } from '@/components/magicui/meteors';
 import { Particles } from '@/components/magicui/particles';
 import { motion } from 'framer-motion';
 
@@ -33,7 +32,6 @@ export default function AboutPage() {
         color="var(--color-lemon-grass)"
         refresh
       />
-      <Meteors number={15} className="absolute inset-0 z-0" />
 
       <motion.div
         initial="hidden"
@@ -52,10 +50,10 @@ export default function AboutPage() {
             ]}
             speed={1.2}
           >
-            About ESHI Consulting
+            About ESHI Consultancy
           </AuroraText>
           <p className="mt-6 text-xl text-[var(--color-rangitoto)]/80 max-w-3xl mx-auto">
-            ESHI Consulting empowers grassroots NGOs, CBOs, and CSOs through
+            ESHI Consultancy empowers grassroots NGOs, CBOs, and CSOs through
             capacity building, enabling sustainable impact and financial
             independence. Our mission is to equip local organizations with the
             tools and expertise needed to thrive in the global development

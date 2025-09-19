@@ -2,7 +2,7 @@
 
 import BlogCard from '@/components/blogs/BlogCard';
 import { AuroraText } from '@/components/magicui/aurora-text';
-import { Meteors } from '@/components/magicui/meteors';
+
 import { Particles } from '@/components/magicui/particles';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -69,7 +69,6 @@ export default function FeaturedBlogs({
         color="var(--color-lemon-grass)"
         refresh
       />
-      <Meteors number={15} className="absolute inset-0 z-0" />
 
       <motion.div
         initial="hidden"

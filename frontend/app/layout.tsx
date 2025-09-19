@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'ESHI Consulting',
+  title: ' ESHI Consultancy',
   description: 'Empowering Grassroots Organizations for Sustainable Impact',
 };
 

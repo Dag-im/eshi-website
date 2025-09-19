@@ -2,7 +2,7 @@
 
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { BorderBeam } from '@/components/magicui/border-beam';
-import { Meteors } from '@/components/magicui/meteors';
+
 import { Particles } from '@/components/magicui/particles';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
 import { Card } from '@/components/ui/card';
@@ -52,7 +52,6 @@ export default function CTA({
         color="var(--color-lemon-grass)"
         refresh
       />
-      <Meteors number={20} className="absolute inset-0 z-0" />
 
       <motion.div
         initial="hidden"

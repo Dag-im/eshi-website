@@ -1,7 +1,7 @@
 'use client';
 
 import { AuroraText } from '@/components/magicui/aurora-text';
-import { Meteors } from '@/components/magicui/meteors';
+
 import { Particles } from '@/components/magicui/particles';
 import { TypingAnimation } from '@/components/magicui/typing-animation';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,7 @@ const mockBlogs: Blog[] = [
     excerpt:
       'Discover how ESHI equips grassroots organizations with tools for sustainable impact.',
     content: `
-      <p>ESHI Consulting believes that building capacity for local Community-Based Organizations, Civil Society Organizations (CSOs), and small NGOs gives these grassroots organizations the program and administrative tools and methodology they need to continue delivering excellent social services to the most-needy target populations, as well as becoming self-sufficient in applying for grants, and fully and effectively implementing and administering its programs.</p>
+      <p> ESHI Consultancy believes that building capacity for local Community-Based Organizations, Civil Society Organizations (CSOs), and small NGOs gives these grassroots organizations the program and administrative tools and methodology they need to continue delivering excellent social services to the most-needy target populations, as well as becoming self-sufficient in applying for grants, and fully and effectively implementing and administering its programs.</p>
       <p>We equip CBOs and NGOs with internal capacity to move forward and thrive without any external entity, such that they are able on their own to solicit a broader donor pool and gain more sustainable funding.</p>
       <h2>Our Approach</h2>
       <p>We build organizational capacity through two phases:</p>
@@ -140,7 +140,6 @@ export default function BlogDetailPage({
         color="var(--color-lemon-grass)"
         refresh
       />
-      <Meteors number={15} className="absolute inset-0 z-0" />
 
       <motion.div
         initial="hidden"

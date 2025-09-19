@@ -1,7 +1,7 @@
 'use client';
 
 import { AuroraText } from '@/components/magicui/aurora-text';
-import { Meteors } from '@/components/magicui/meteors';
+
 import { Particles } from '@/components/magicui/particles';
 import { motion } from 'framer-motion';
 import { BarChart, BookOpen, Globe, Users } from 'lucide-react';
@@ -77,7 +77,6 @@ export default function Services({
         color="var(--color-lemon-grass)"
         refresh
       />
-      <Meteors number={15} className="absolute inset-0 z-0" />
 
       <motion.div
         className="max-w-7xl mx-auto px-6 relative z-10"

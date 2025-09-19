@@ -2,7 +2,7 @@
 
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { BorderBeam } from '@/components/magicui/border-beam';
-import { Meteors } from '@/components/magicui/meteors';
+
 import { Particles } from '@/components/magicui/particles';
 import CallToAction from '@/components/services/CallToAction';
 import ImpactSection from '@/components/services/ImpactSection';
@@ -22,7 +22,7 @@ export default function ServicesPage() {
           color="var(--color-lemon-grass)"
           refresh
         />
-        <Meteors number={15} className="absolute inset-0 z-0" />
+
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

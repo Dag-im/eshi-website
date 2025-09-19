@@ -2,7 +2,7 @@
 
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { BorderBeam } from '@/components/magicui/border-beam';
-import { Meteors } from '@/components/magicui/meteors';
+
 import { Particles } from '@/components/magicui/particles';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -98,7 +98,7 @@ export default function ContactUsPage() {
         color="var(--color-lemon-grass)"
         refresh
       />
-      <Meteors number={15} className="absolute inset-0 z-0" />
+
       {/* Hero Section */}
       <section className="relative py-24 px-6 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

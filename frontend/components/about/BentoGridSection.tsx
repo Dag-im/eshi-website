@@ -19,14 +19,14 @@ const missionStory = [
     type: 'mission',
     title: 'Our Mission: Empowering Grassroots',
     description:
-      'ESHI Consulting is dedicated to empowering local grassroots NGOs, CBOs, and CSOs to deliver high-quality social services to marginalized populations. We provide the administrative and technical skills needed to secure sustainable funding, ensuring these organizations thrive independently and achieve lasting impact.',
+      ' ESHI Consultancy is dedicated to empowering local grassroots NGOs, CBOs, and CSOs to deliver high-quality social services to marginalized populations. We provide the administrative and technical skills needed to secure sustainable funding, ensuring these organizations thrive independently and achieve lasting impact.',
     bgColor: 'bg-[var(--color-avocado)]',
   },
   {
     type: 'story',
     title: 'Our Story: From Ethiopia to Global Impact',
     description:
-      'ESHI Consulting began as the Ethiopian Self-Help Initiative, born from over a decade of collaboration among its three principals working with grassroots women’s microsavings groups in Ethiopia. Inspired by the power of knowledge sharing and capacity building, we adopted “Eshi”—an Ethiopian expression meaning “ok, cool”—to reflect our approachable, global mission. Today, ESHI empowers local NGOs, CBOs, and CSOs worldwide.',
+      ' ESHI Consultancy began as the Ethiopian Self-Help Initiative, born from over a decade of collaboration among its three principals working with grassroots women’s microsavings groups in Ethiopia. Inspired by the power of knowledge sharing and capacity building, we adopted “Eshi”—an Ethiopian expression meaning “ok, cool”—to reflect our approachable, global mission. Today, ESHI empowers local NGOs, CBOs, and CSOs worldwide.',
     bgColor: 'bg-[var(--color-deco)]',
   },
 ];

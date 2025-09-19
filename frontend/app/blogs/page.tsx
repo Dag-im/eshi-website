@@ -4,7 +4,7 @@ import BlogFilters from '@/components/blogs/BlogFilters';
 import BlogList from '@/components/blogs/BlogLIst';
 import BlogSearch from '@/components/blogs/BlogSearch';
 import { AuroraText } from '@/components/magicui/aurora-text';
-import { Meteors } from '@/components/magicui/meteors';
+
 import { Particles } from '@/components/magicui/particles';
 import Pagination from '@/components/shared/Pagination';
 import { motion } from 'framer-motion';
@@ -177,7 +177,6 @@ export default function BlogsPage() {
         color="var(--color-lemon-grass)"
         refresh
       />
-      <Meteors number={15} className="absolute inset-0 z-0" />
 
       <motion.div
         initial="hidden"
