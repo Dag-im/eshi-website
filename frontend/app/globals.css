@@ -103,18 +103,24 @@
     }
   }
   --animate-marquee: marquee var(--duration) infinite linear;
-  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite
-;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
   @keyframes marquee {
-  from {
-    transform: translateX(0);}
-  to {
-    transform: translateX(calc(-100% - var(--gap)));}}
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
   @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);}
-  to {
-    transform: translateY(calc(-100% - var(--gap)));}}}
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+}
 
 :root {
   --radius: 0.625rem;
@@ -192,7 +198,13 @@
   --color-deco: #cad388;
   --color-indian-khaki: #c5b394;
   --color-lemon-grass: #919184;
+
+  --overlay-1: rgba(var(--color-rangitoto-rgb), 0.28);
+  --overlay-2: rgba(var(--color-deco-rgb), 0.3);
+  --overlay-3: rgba(var(--color-avocado-rgb), 0.26);
 }
+
+/* ready-made overlay vars (adjust alpha here) */
 
 @layer base {
   * {

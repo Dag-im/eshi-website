@@ -1,23 +1,34 @@
+'use client';
+import AdminLayout from '@/components/admin/AdminLayout';
 import ClientQueryProvider from '@/components/ClientQueryProvider';
 import Footer from '@/components/shared/Footer';
 import Navbar from '@/components/shared/NavBar';
-import { Metadata } from 'next';
-import { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
+import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
-export const metadata: Metadata = {
-  title: ' ESHI Consultancy',
-  description: 'Empowering Grassroots Organizations for Sustainable Impact',
-};
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname.startsWith('/admin');
 
-export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="scroll-smooth">
         <ClientQueryProvider>
-          <Navbar />
-          {children}
-          <Footer />
+          {isAdminRoute ? (
+            <AdminLayout>{children}</AdminLayout>
+          ) : (
+            <>
+              <Navbar />
+              {children}
+              <Footer />
+            </>
+          )}
+          <Toaster position="top-right" />
         </ClientQueryProvider>
       </body>
     </html>
