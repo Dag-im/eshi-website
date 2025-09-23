@@ -38,6 +38,9 @@ const blogColumns = [
 export default function BlogsPage() {
   const router = useRouter();
   const { data: blogs, isLoading } = useBlogs();
+
+  console.log('blogs:', blogs);
+
   const deleteMutation = useDeleteBlog();
 
   const handleCreate = () => {
@@ -62,7 +65,7 @@ export default function BlogsPage() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Blogs</h1>
       <AdminTable
-        data={blogs || []}
+        data={Array.isArray(blogs?.blogs) ? blogs.blogs : []}
         columns={blogColumns}
         onCreate={handleCreate}
         onEdit={handleEdit}
