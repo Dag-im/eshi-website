@@ -39,6 +39,7 @@ export const useCreateTeamMember = () => {
     mutationFn: async (data: FormData) => {
       const res = await privateApi.post('/team', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
       return res.data;
     },
@@ -52,6 +53,7 @@ export const useUpdateTeamMember = () => {
     mutationFn: async ({ id, data }: { id: string; data: FormData }) => {
       const res = await privateApi.put(`/team/${id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
       return res.data;
     },

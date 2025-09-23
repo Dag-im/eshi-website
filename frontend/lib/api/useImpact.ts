@@ -29,6 +29,7 @@ export const useCreateImpact = () => {
     mutationFn: async (data: FormData) => {
       const res = await privateApi.post('/impact', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
       return res.data;
     },
@@ -42,6 +43,7 @@ export const useUpdateImpact = () => {
     mutationFn: async ({ id, data }: { id: string; data: FormData }) => {
       const res = await privateApi.put(`/impact/${id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
       return res.data;
     },

@@ -2,7 +2,6 @@ import app from './app';
 import { config } from './lib/config';
 import { connectDb } from './lib/db';
 import { logger } from './lib/logger';
-import { initEmailTransporter } from './lib/mailer';
 import authRoutes from './routes/auth.routes';
 import blogRoutes from './routes/blog.routes';
 import contactRoutes from './routes/contact.routes';
@@ -26,10 +25,6 @@ app.use('/api/team', teamRoutes);
 
 async function startServer() {
   try {
-    // Initialize and verify email transporter
-    await initEmailTransporter();
-    logger.info('Email transporter initialized');
-
     // Connect to DB
     await connectDb();
     logger.info('Database connected');

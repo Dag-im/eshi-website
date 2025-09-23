@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
@@ -7,6 +8,8 @@ import { config } from './lib/config';
 import { logger } from './lib/logger';
 import { mongoSanitizeMiddleware } from './middleware/mongoSanitize';
 import { xssCleanMiddleware } from './middleware/xssClean'; // custom XSS middleware
+
+// after body parsers
 
 const app = express();
 
@@ -25,6 +28,8 @@ app.use(
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   })
 );
+
+app.use(cookieParser());
 
 // --------------------
 // CORS

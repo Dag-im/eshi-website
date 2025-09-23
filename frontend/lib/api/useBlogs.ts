@@ -37,6 +37,7 @@ export const useCreateBlog = () => {
     mutationFn: async (data: FormData) => {
       const res = await privateApi.post('/blogs', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
       return res.data;
     },
@@ -51,6 +52,7 @@ export const useUpdateBlog = () => {
     mutationFn: async ({ id, data }: { id: string; data: FormData }) => {
       const res = await privateApi.put(`/blogs/${id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
       return res.data;
     },

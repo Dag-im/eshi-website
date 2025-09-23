@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { config } from '../lib/config';
 import { CustomError, verifyToken } from '../lib/jwt';
-import { sendMail } from '../lib/mailer';
 import * as authService from '../services/auth.service';
 import { getUser } from '../services/user.service';
 
@@ -22,14 +21,16 @@ export async function login(req: Request, res: Response) {
   const { user, accessToken, refreshToken } = await authService.loginUser(email, password, req.ip);
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
-    secure: config.COOKIE_SECURE,
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/',
     maxAge: 1000 * 60 * 15, // 15 minutes
   });
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
-    secure: config.COOKIE_SECURE,
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/',
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
   res.json({
@@ -43,8 +44,9 @@ export async function refresh(req: Request, res: Response) {
   const tokens = await authService.refreshTokens(token, req.ip);
   res.cookie('refreshToken', tokens.refreshToken, {
     httpOnly: true,
-    secure: config.COOKIE_SECURE,
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/',
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
   res.json({ accessToken: tokens.accessToken });
@@ -65,14 +67,8 @@ export async function forgotPassword(req: Request, res: Response) {
   const token = await authService.createPasswordResetToken(email, req.ip);
   if (token) {
     const link = `${config.APP_URL}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
-    const html = `
-      <p>Hello,</p>
-      <p>You requested a password reset. Click the link below to reset your password:</p>
-      <a href="${link}">${link}</a>
-      <p>If you didn't request this, please ignore this email.</p>
-      <p>This link expires in 1 hour.</p>
-    `;
-    await sendMail(email, 'Password Reset Request', html);
+    console.log(`Password reset link for ${email}: ${link}`);
+    // In production, send the email using your email service
   }
   res.json({ message: 'If an account exists with this email, a reset link has been sent.' });
 }
