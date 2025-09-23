@@ -23,7 +23,7 @@ export async function initEmailTransporter() {
     await transporter.verify();
     logger.info('Email transporter connected successfully');
   } catch (error: any) {
-    logger.error('Failed to connect email transporter:', error.message);
+    logger.error('Failed to connect email transporter:', error);
     throw new Error('Email transporter connection failed');
   }
 }

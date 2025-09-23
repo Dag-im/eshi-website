@@ -26,7 +26,10 @@ export const config = {
 };
 
 for (const [key, value] of Object.entries(config)) {
-  if (!value && !['GOOGLE_ACCESS_TOKEN', 'PORT', 'NODE_ENV'].includes(key)) {
+  if (
+    (value === undefined || value === '') &&
+    !['GOOGLE_ACCESS_TOKEN', 'PORT', 'NODE_ENV'].includes(key)
+  ) {
     throw new Error(`Missing required env var: ${key}`);
   }
 }

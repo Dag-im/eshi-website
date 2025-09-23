@@ -16,6 +16,7 @@ export default function Sidebar() {
     { href: '/admin/impacts', label: 'Impacts' },
     { href: '/admin/blogs', label: 'Blogs' },
     { href: '/admin/contact', label: 'Contact Messages' },
+    { href: '/admin/users', label: 'Users' },
   ];
 
   return (

@@ -26,13 +26,13 @@ app.use('/api/team', teamRoutes);
 
 async function startServer() {
   try {
-    // Connect to DB
-    await connectDb();
-    logger.info('Database connected');
-
     // Initialize and verify email transporter
     await initEmailTransporter();
     logger.info('Email transporter initialized');
+
+    // Connect to DB
+    await connectDb();
+    logger.info('Database connected');
 
     // Start server
     app.listen(Number(config.PORT), '0.0.0.0', () => {
