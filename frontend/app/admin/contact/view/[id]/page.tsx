@@ -4,15 +4,6 @@ import { ViewContactMessage } from '@/components/admin/contact/ViewContactMessag
 import { useContactMessage } from '@/lib/api/useContact';
 import { useParams } from 'next/navigation';
 
-interface Contact {
-  id: string;
-  name: string;
-  email: string;
-  message: string;
-  createdAt: string; // ISO 8601 string from DB
-  seen: boolean;
-}
-
 export default function ContactViewPage() {
   const params = useParams();
   const id = params.id as string;
@@ -45,7 +36,7 @@ export default function ContactViewPage() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">View Contact Message</h1>
       <ViewContactMessage
-        id={contact.id}
+        _id={contact._id}
         name={contact.name}
         email={contact.email}
         message={contact.message}
