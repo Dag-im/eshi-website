@@ -5,7 +5,7 @@ import { useDeleteTeamMember, useTeamMembers } from '@/lib/api/useTeam';
 import { useRouter } from 'next/navigation';
 
 interface TeamMember {
-  id: string;
+  _id: string;
   name: string;
   title: string;
   bio: string;
@@ -32,12 +32,12 @@ export default function TeamPage() {
   };
 
   const handleEdit = (item: TeamMember) => {
-    router.push(`/admin/team/edit/${item.id}`);
+    router.push(`/admin/team/edit/${item._id}`);
   };
 
   const handleDelete = (item: TeamMember) => {
     if (confirm('Are you sure you want to delete this team member?')) {
-      deleteMutation.mutate(item.id);
+      deleteMutation.mutate(item._id);
     }
   };
 
