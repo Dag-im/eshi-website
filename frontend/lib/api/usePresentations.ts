@@ -1,8 +1,15 @@
 // presentations.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
+
+interface ApiErrorResponse {
+  error?: {
+    message?: string;
+  };
+}
 
 export const usePresentations = () => {
   return useQuery({
@@ -36,7 +43,7 @@ export const useCreatePresentation = () => {
       qc.invalidateQueries({ queryKey: ['presentations'] });
       toast.success('Presentation created successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to create presentation.'
       );
@@ -61,7 +68,7 @@ export const useUpdatePresentation = () => {
       qc.invalidateQueries({ queryKey: ['presentations'] });
       toast.success('Presentation updated successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to update presentation.'
       );
@@ -79,7 +86,7 @@ export const useDeletePresentation = () => {
       qc.invalidateQueries({ queryKey: ['presentations'] });
       toast.success('Presentation deleted successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to delete presentation.'
       );

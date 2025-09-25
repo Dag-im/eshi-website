@@ -8,6 +8,7 @@ import { easeOut, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { BorderBeam } from '../magicui/border-beam';
 
+import { Service } from '@/types/service';
 import {
   Activity,
   Bell,
@@ -210,7 +211,7 @@ export default function Services() {
               No services available at the moment.
             </div>
           ) : (
-            services.map((service: any, key: any) => {
+            services.map((service: Service, key: number) => {
               const IconComponent = iconMap[service.icon] ?? Activity;
               return (
                 <motion.div

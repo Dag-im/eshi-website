@@ -1,8 +1,15 @@
 // blogs.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
+
+interface ApiErrorResponse {
+  error?: {
+    message?: string;
+  };
+}
 
 export const useBlogs = (params?: {
   page?: number;
@@ -44,7 +51,7 @@ export const useCreateBlog = () => {
       qc.invalidateQueries({ queryKey: ['blogs'] });
       toast.success('Blog created successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to create blog.'
       );
@@ -66,7 +73,7 @@ export const useUpdateBlog = () => {
       qc.invalidateQueries({ queryKey: ['blogs'] });
       toast.success('Blog updated successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to update blog.'
       );
@@ -84,7 +91,7 @@ export const useDeleteBlog = () => {
       qc.invalidateQueries({ queryKey: ['blogs'] });
       toast.success('Blog deleted successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to delete blog.'
       );

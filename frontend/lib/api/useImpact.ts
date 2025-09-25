@@ -4,6 +4,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
 
+import { AxiosError } from 'axios';
+
+interface ApiErrorResponse {
+  error?: {
+    message?: string;
+  };
+}
+
 export const useImpacts = () => {
   return useQuery({
     queryKey: ['impacts'],
@@ -39,7 +47,7 @@ export const useCreateImpact = () => {
       qc.invalidateQueries({ queryKey: ['impacts'] });
       toast.success('Impact created successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to create impact.'
       );
@@ -61,7 +69,7 @@ export const useUpdateImpact = () => {
       qc.invalidateQueries({ queryKey: ['impacts'] });
       toast.success('Impact updated successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to update impact.'
       );
@@ -79,7 +87,7 @@ export const useDeleteImpact = () => {
       qc.invalidateQueries({ queryKey: ['impacts'] });
       toast.success('Impact deleted successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to delete impact.'
       );

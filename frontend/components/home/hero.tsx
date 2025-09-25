@@ -7,12 +7,20 @@ import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 interface HeroProps {
   bgImages?: { src: string; alt: string }[];
+  isLoading?: boolean;
 }
 
 export default function Hero({
@@ -32,7 +40,7 @@ export default function Hero({
   }, [current]);
 
   // Lottie JSON (optional)
-  const [animData, setAnimData] = useState<any | null>(null);
+  const [animData, setAnimData] = useState<ReactNode | null>(null);
   useEffect(() => {
     let alive = true;
     fetch('/lotties/hero.json')
@@ -107,9 +115,6 @@ export default function Hero({
       clearInterval(id);
     };
   }, [bgImages, len, preloadImage]);
-
-  // track translate x in percent
-  const trackX = `-${current * 100}%`;
 
   return (
     <section className="relative w-full h-screen pt-10 overflow-hidden">

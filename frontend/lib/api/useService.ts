@@ -1,8 +1,15 @@
 // services.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
+
+interface ApiErrorResponse {
+  error?: {
+    message?: string;
+  };
+}
 
 export const useServices = () => {
   return useQuery({
@@ -40,7 +47,7 @@ export const useCreateService = () => {
       qc.invalidateQueries({ queryKey: ['services'] });
       toast.success('Service created successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to create service.'
       );
@@ -65,7 +72,7 @@ export const useUpdateService = () => {
       qc.invalidateQueries({ queryKey: ['services'] });
       toast.success('Service updated successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to update service.'
       );
@@ -83,7 +90,7 @@ export const useDeleteService = () => {
       qc.invalidateQueries({ queryKey: ['services'] });
       toast.success('Service deleted successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to delete service.'
       );

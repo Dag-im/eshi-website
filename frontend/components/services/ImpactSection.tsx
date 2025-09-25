@@ -41,9 +41,9 @@ export default function ImpactSection() {
   }, [impacts]);
 
   // Map API response to match Impact type (handle logo vs. logoUrl)
-  const mappedImpacts: Impact[] = (impacts || []).map((item: any) => ({
+  const mappedImpacts: Impact[] = (impacts || []).map((item: Impact) => ({
     name: item.name,
-    logo: item.logo || item.logoUrl || '/default-image.png', // Fallback image
+    logo: item.logo || '/default-image.png', // Fallback image
     desc: item.desc,
     stat: item.stat,
   }));

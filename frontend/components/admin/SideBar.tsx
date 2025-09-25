@@ -17,13 +17,6 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-// Define custom colors for Tailwind
-const customColors = {
-  rangitoto: '#1A3C34', // Dark teal
-  albescentWhite: '#F8E8D6', // Light cream
-  lemonGrass: '#A8B5A2', // Muted green
-};
-
 export default function Sidebar() {
   const { isSidebarOpen, toggleSidebar } = useAuthStore();
   const pathname = usePathname();
@@ -50,7 +43,7 @@ export default function Sidebar() {
       onSuccess: () => {
         toast.success('Logged out successfully!');
       },
-      onError: (error: any) => {
+      onError: (error) => {
         toast.error(error.response?.data?.error?.message || 'Logout failed.');
       },
     });
@@ -61,7 +54,6 @@ export default function Sidebar() {
       className={`fixed top-0 left-0 h-full bg-rangitoto text-white transition-all duration-300 ease-in-out shadow-lg ${
         isSidebarOpen ? 'w-64' : 'w-16'
       }`}
-      aria-expanded={isSidebarOpen}
     >
       <div className="flex flex-col h-full">
         {/* Toggle Button */}

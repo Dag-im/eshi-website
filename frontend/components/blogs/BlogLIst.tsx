@@ -3,7 +3,7 @@
 import BlogCard from '@/components/blogs/BlogCard';
 
 type Blog = {
-  id: number;
+  _id: number;
   title: string;
   excerpt: string;
   slug: string;
@@ -29,8 +29,8 @@ export default function BlogList({ blogs }: BlogListProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {blogs.map((blog) => (
         <BlogCard
-          key={blog.id}
-          id={blog.id}
+          key={blog._id}
+          _id={blog._id}
           title={blog.title}
           excerpt={blog.excerpt}
           slug={blog.slug}

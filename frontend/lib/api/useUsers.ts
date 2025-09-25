@@ -1,7 +1,14 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { privateApi } from '../axios';
+
+interface ApiErrorResponse {
+  error?: {
+    message?: string;
+  };
+}
 
 // ✅ Get all users
 export const useUsers = () => {
@@ -38,7 +45,7 @@ export const useCreateUser = () => {
       qc.invalidateQueries({ queryKey: ['users'] });
       toast.success('User created successfully.');
     },
-    onError: (err: any) => {
+    onError: (err: AxiosError<ApiErrorResponse>) => {
       toast.error(
         err.response?.data?.error?.message || 'Failed to create user.'
       );
@@ -64,7 +71,7 @@ export const useUpdateUser = () => {
       qc.invalidateQueries({ queryKey: ['users'] });
       toast.success('User updated successfully.');
     },
-    onError: (err: any) => {
+    onError: (err: AxiosError<ApiErrorResponse>) => {
       toast.error(
         err.response?.data?.error?.message || 'Failed to update user.'
       );
@@ -83,7 +90,7 @@ export const useDeleteUser = () => {
       qc.invalidateQueries({ queryKey: ['users'] });
       toast.success('User deleted successfully.');
     },
-    onError: (err: any) => {
+    onError: (err: AxiosError<ApiErrorResponse>) => {
       toast.error(
         err.response?.data?.error?.message || 'Failed to delete user.'
       );
@@ -105,7 +112,7 @@ export const useResetUserPassword = () => {
         'Password reset successfully. User must change it at next login.'
       );
     },
-    onError: (err: any) => {
+    onError: (err: AxiosError<ApiErrorResponse>) => {
       toast.error(
         err.response?.data?.error?.message || 'Failed to reset password.'
       );

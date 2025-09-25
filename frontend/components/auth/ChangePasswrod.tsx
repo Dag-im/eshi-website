@@ -23,7 +23,7 @@ export default function ChangePassword() {
     resetPasswordMutation.mutate(
       { userId: user.id, newPassword },
       {
-        onError: (error: any) => {
+        onError: (error) => {
           console.error('ChangePassword: Reset password error:', error);
           toast.error(
             error.response?.data?.error?.message || 'Failed to change password.'

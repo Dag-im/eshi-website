@@ -22,6 +22,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCreateBlog, useUpdateBlog } from '@/lib/api/useBlogs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Upload, X } from 'lucide-react';
+import Image from 'next/image';
 import * as React from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -240,9 +241,10 @@ export const BlogForm: React.FC<BlogFormProps> = ({ item, onSuccess }) => {
                   </label>
                 ) : (
                   <div className="relative">
-                    <img
+                    <Image
                       src={filePreview}
                       alt="Preview"
+                      fill
                       className="w-full h-48 object-cover rounded-md"
                     />
                     <button

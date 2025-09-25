@@ -8,7 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 type BlogCardProps = {
-  id: number | string;
+  _id: number | string;
   title: string;
   excerpt: string;
   slug: string;

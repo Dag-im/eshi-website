@@ -1,8 +1,15 @@
 // contact.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
+
+interface ApiErrorResponse {
+  error?: {
+    message?: string;
+  };
+}
 
 export const useSubmitContact = () => {
   return useMutation({
@@ -54,7 +61,7 @@ export const useMarkMessageSeen = () => {
       qc.invalidateQueries({ queryKey: ['contact-messages'] });
       toast.success('Message marked as seen!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message ||
           'Failed to mark message as seen.'

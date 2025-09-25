@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { memo, useEffect } from 'react';
 
 type Presentation = {
-  id: number;
+  _id: number;
   title: string;
   description: string;
 };
@@ -60,10 +60,10 @@ export default function PresentationsSection() {
 
   // Map API response to match Presentation type
   const mappedPresentations: Presentation[] = (presentations || []).map(
-    (item: any) => ({
-      id: item.id || item._id,
+    (item: Presentation) => ({
+      id: item._id,
       title: item.title,
-      description: item.description || item.desc || '',
+      description: item.description || '',
     })
   );
 
@@ -106,7 +106,7 @@ export default function PresentationsSection() {
           <Marquee pauseOnHover className="gap-6 [--duration:60s]" repeat={2}>
             {mappedPresentations.map((presentation) => (
               <PresentationCard
-                key={presentation.id}
+                key={presentation._id}
                 presentation={presentation}
               />
             ))}

@@ -1,5 +1,9 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { toast } from 'react-hot-toast';
+
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 export const privateApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
@@ -16,10 +20,10 @@ let isRefreshing = false;
 privateApi.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest: any = error.config;
+    const originalRequest: CustomAxiosRequestConfig | undefined = error.config;
 
     // Prevent retrying refresh on itself
-    if (originalRequest?.url?.includes('/auth/refresh')) {
+    if (!originalRequest || originalRequest?.url?.includes('/auth/refresh')) {
       toast.error('Session expired. Please log in again.');
       window.location.href = '/login';
       return Promise.reject(error);

@@ -16,7 +16,7 @@ import Image from 'next/image';
 import { memo, useEffect } from 'react';
 
 type TeamMember = {
-  id: number;
+  _id: number;
   name: string;
   title: string;
   bio: string;
@@ -109,12 +109,12 @@ export default function TeamSection() {
 
   // Map API response to match TeamMember type (handle image vs. imageUrl)
   const mappedTeamMembers: TeamMember[] = (teamMembers || []).map(
-    (item: any) => ({
-      id: item.id || item._id,
+    (item: TeamMember) => ({
+      id: item._id,
       name: item.name,
       title: item.title,
       bio: item.bio,
-      imageUrl: item.imageUrl || item.image || '/default-image.png', // Fallback image
+      imageUrl: item.imageUrl || '/default-image.png', // Fallback image
     })
   );
 
@@ -151,7 +151,7 @@ export default function TeamSection() {
           </div>
         ) : (
           mappedTeamMembers.map((member) => (
-            <TeamMemberCard key={member.id} member={member} />
+            <TeamMemberCard key={member._id} member={member} />
           ))
         )}
       </div>

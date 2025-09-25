@@ -12,18 +12,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-type Blog = {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  slug: string;
-  imageUrl: string;
-  category: string;
-  date: string;
-  relatedBlogs: number[];
-};
-
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {

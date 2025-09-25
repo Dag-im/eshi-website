@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useHero, useUpdateHero } from '@/lib/api/useHero';
 import { Loader2, Upload } from 'lucide-react';
+import Image from 'next/image';
 import { useState } from 'react';
 
 export default function AdminHomePage() {
@@ -76,9 +77,11 @@ export default function AdminHomePage() {
                       key={idx}
                       className="rounded-lg overflow-hidden border shadow-sm"
                     >
-                      <img
+                      <Image
                         src={img.src}
                         alt={img.alt || 'Hero Image'}
+                        width={400}
+                        height={128}
                         className="w-full h-32 object-cover"
                       />
                       {img.alt && (

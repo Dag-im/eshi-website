@@ -1,8 +1,15 @@
 // team.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
+
+interface ApiErrorResponse {
+  error?: {
+    message?: string;
+  };
+}
 
 export const useTeam = () => {
   return useQuery({
@@ -49,7 +56,7 @@ export const useCreateTeamMember = () => {
       qc.invalidateQueries({ queryKey: ['team'] });
       toast.success('Team member created successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to create team member.'
       );
@@ -71,7 +78,7 @@ export const useUpdateTeamMember = () => {
       qc.invalidateQueries({ queryKey: ['team'] });
       toast.success('Team member updated successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to update team member.'
       );
@@ -89,7 +96,7 @@ export const useDeleteTeamMember = () => {
       qc.invalidateQueries({ queryKey: ['team'] });
       toast.success('Team member deleted successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to delete team member.'
       );

@@ -1,8 +1,15 @@
 'use client';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { User } from '../../types/auth';
 import { privateApi } from '../axios';
+
+interface ApiErrorResponse {
+  error?: {
+    message?: string;
+  };
+}
 
 export const useAuthQuery = () => {
   const query = useQuery<User>({
@@ -43,7 +50,7 @@ export const useLoginMutation = () => {
         window.location.href = data.user.role === 'admin' ? '/admin' : '/';
       }
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(error.response?.data?.error?.message || 'Login failed.');
     },
   });
@@ -58,7 +65,7 @@ export const useLogoutMutation = () => {
       toast.success('Logged out successfully!');
       window.location.href = '/login';
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(error.response?.data?.error?.message || 'Logout failed.');
     },
   });
@@ -82,7 +89,7 @@ export const useResetPasswordMutation = () => {
       toast.success('Password changed successfully! Please log in again.');
       window.location.href = '/login';
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to change password.'
       );

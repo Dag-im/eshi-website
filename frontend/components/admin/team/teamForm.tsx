@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCreateTeamMember, useUpdateTeamMember } from '@/lib/api/useTeam';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Upload, X } from 'lucide-react';
+import Image from 'next/image';
 import * as React from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -148,9 +149,10 @@ export const TeamForm: React.FC<TeamFormProps> = ({ item, onSuccess }) => {
                   </label>
                 ) : (
                   <div className="relative">
-                    <img
+                    <Image
                       src={filePreview}
                       alt="Preview"
+                      fill
                       className="w-full h-48 object-cover rounded-md"
                     />
                     <button

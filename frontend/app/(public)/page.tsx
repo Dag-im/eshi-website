@@ -7,7 +7,7 @@ import Services from '@/components/home/services';
 import { useHero } from '@/lib/api/useHero';
 
 export default function HomePage() {
-  const { data: hero, isLoading } = useHero();
+  const { data: hero } = useHero();
   return (
     <main className="bg-gradient-to-br from-indian-khaki via-albescent-white  to-albescent-white">
       <Hero bgImages={hero?.bgImages} />

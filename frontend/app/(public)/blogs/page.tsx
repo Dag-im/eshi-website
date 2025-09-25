@@ -54,7 +54,6 @@ export default function BlogsPage() {
 
   // Extract blogs and total count from API response
   const blogsFromApi = data?.blogs || [];
-  const totalBlogsFromApi = data?.total || 0;
 
   // Filter blogs based on search query (frontend filtering)
   const filteredBlogs = blogsFromApi.filter((blog: Blog) =>

@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 
 type Blog = {
-  id: number | string;
+  _id: number | string;
   title: string;
   excerpt: string;
   slug: string;
@@ -37,12 +37,12 @@ export default function FeaturedBlogs() {
   }, [data]);
 
   // Map API response to match Blog type
-  const mappedBlogs: Blog[] = blogsFromApi.map((item: any) => ({
-    id: item.id || item._id,
+  const mappedBlogs: Blog[] = blogsFromApi.map((item: Blog) => ({
+    id: item._id,
     title: item.title,
-    excerpt: item.excerpt || item.description || item.summary || '',
+    excerpt: item.excerpt || '',
     slug: item.slug,
-    imageUrl: item.imageUrl || item.image || '/default-image.png',
+    imageUrl: item.imageUrl || '/default-image.png',
   }));
 
   return (
@@ -103,7 +103,7 @@ export default function FeaturedBlogs() {
             variants={containerVariants}
           >
             {mappedBlogs.map((blog) => (
-              <BlogCard key={blog.id} {...blog} />
+              <BlogCard key={blog._id} {...blog} />
             ))}
           </motion.div>
         )}

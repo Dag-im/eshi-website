@@ -9,7 +9,7 @@ interface Contact {
   name: string;
   email: string;
   message: string;
-  date: string;
+  createdAt: string; // ISO 8601 string from DB
   seen: boolean;
 }
 
@@ -24,7 +24,21 @@ const contactColumns = [
   {
     key: 'date',
     label: 'Date',
-    render: (item: Contact) => new Date(item.date).toLocaleString(),
+    render: (item: Contact) => {
+      // Validate and parse the date
+      const parsedDate = new Date(item.createdAt);
+      return parsedDate.toString() === 'Invalid Date'
+        ? 'Invalid Date'
+        : parsedDate.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true,
+          });
+    },
   },
   {
     key: 'seen',
