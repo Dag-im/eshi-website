@@ -31,7 +31,7 @@ export default function ChangePassword() {
     resetPasswordMutation.mutate(
       { userId: user.id, newPassword },
       {
-        onError: (err: any) => {
+        onError: (err) => {
           toast.error(
             err.response?.data?.error?.message || 'Failed to change password.'
           );
