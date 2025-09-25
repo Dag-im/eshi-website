@@ -1,30 +1,26 @@
+'use client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { useAuthStore } from '../../stores/auth.store';
 import { User } from '../../types/auth';
 import { privateApi } from '../axios';
 
 export const useAuthQuery = () => {
-  const { setUser, clearUser } = useAuthStore();
-
-  return useQuery<User>({
+  const query = useQuery<User>({
     queryKey: ['auth'],
     queryFn: async () => {
       try {
         const response = await privateApi.get('/auth/profile');
-        setUser(response.data);
         return response.data;
       } catch {
-        clearUser();
         throw new Error('Not authenticated');
       }
     },
   });
+
+  return query;
 };
 
 export const useLoginMutation = () => {
-  const { setUser } = useAuthStore();
-
   return useMutation({
     mutationFn: async ({
       email,
@@ -40,9 +36,12 @@ export const useLoginMutation = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      setUser(data.user);
       toast.success('Logged in successfully!');
-      window.location.href = data.user.role === 'admin' ? '/admin' : '/';
+      if (data.user.mustChangePassword) {
+        window.location.href = '/change-password';
+      } else {
+        window.location.href = data.user.role === 'admin' ? '/admin' : '/';
+      }
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.error?.message || 'Login failed.');
@@ -51,13 +50,11 @@ export const useLoginMutation = () => {
 };
 
 export const useLogoutMutation = () => {
-  const { clearUser } = useAuthStore();
   return useMutation({
     mutationFn: async () => {
       await privateApi.post('/auth/logout');
     },
     onSuccess: () => {
-      clearUser();
       toast.success('Logged out successfully!');
       window.location.href = '/login';
     },
@@ -67,46 +64,27 @@ export const useLogoutMutation = () => {
   });
 };
 
-export const useForgotPasswordMutation = () => {
-  return useMutation({
-    mutationFn: async (email: string) => {
-      await privateApi.post('/auth/forgot-password', { email });
-    },
-    onSuccess: () => {
-      toast.success('Password reset link sent to your email.');
-    },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to send reset link.'
-      );
-    },
-  });
-};
-
 export const useResetPasswordMutation = () => {
   return useMutation({
     mutationFn: async ({
-      email,
-      token,
+      userId,
       newPassword,
     }: {
-      email: string;
-      token: string;
+      userId: string;
       newPassword: string;
     }) => {
       await privateApi.post('/auth/reset-password', {
-        email,
-        token,
+        userId,
         newPassword,
       });
     },
     onSuccess: () => {
-      toast.success('Password reset successfully!');
+      toast.success('Password changed successfully! Please log in again.');
       window.location.href = '/login';
     },
     onError: (error: any) => {
       toast.error(
-        error.response?.data?.error?.message || 'Failed to reset password.'
+        error.response?.data?.error?.message || 'Failed to change password.'
       );
     },
   });

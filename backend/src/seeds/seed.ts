@@ -24,6 +24,7 @@ async function seed() {
       passwordHash: adminPasswordHash,
       isActive: true,
       role: 'admin',
+      mustChangePassword: false,
     });
 
     console.log('Admin user created:', adminUser.email);

@@ -20,20 +20,6 @@ const teamColumns = [
     label: 'Bio',
     render: (item: TeamMember) => item.bio.slice(0, 50) + '...',
   },
-  {
-    key: 'imageUrl',
-    label: 'Image',
-    render: (item: TeamMember) =>
-      item.imageUrl ? (
-        <img
-          src={item.imageUrl}
-          alt="Image"
-          className="h-10 w-10 object-cover"
-        />
-      ) : (
-        'No Image'
-      ),
-  },
 ];
 
 export default function TeamPage() {

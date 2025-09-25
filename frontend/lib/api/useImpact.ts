@@ -1,5 +1,7 @@
+// impacts.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
 
 export const useImpacts = () => {
@@ -33,7 +35,15 @@ export const useCreateImpact = () => {
       });
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['impacts'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['impacts'] });
+      toast.success('Impact created successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to create impact.'
+      );
+    },
   });
 };
 
@@ -47,7 +57,15 @@ export const useUpdateImpact = () => {
       });
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['impacts'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['impacts'] });
+      toast.success('Impact updated successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to update impact.'
+      );
+    },
   });
 };
 
@@ -57,6 +75,14 @@ export const useDeleteImpact = () => {
     mutationFn: async (id: string) => {
       await privateApi.delete(`/impact/${id}`);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['impacts'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['impacts'] });
+      toast.success('Impact deleted successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to delete impact.'
+      );
+    },
   });
 };

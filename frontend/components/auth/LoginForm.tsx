@@ -34,6 +34,10 @@ export default function LoginForm() {
       <Button type="submit" disabled={isPending}>
         {isPending ? 'Logging in...' : 'Login'}
       </Button>
+      <p className="text-sm text-gray-500">
+        If your password was reset by an admin, you will be prompted to change
+        it after login.
+      </p>
     </form>
   );
 }

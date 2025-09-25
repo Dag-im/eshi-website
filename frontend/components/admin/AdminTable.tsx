@@ -20,6 +20,13 @@ type Column<T> = {
   render?: (item: T) => React.ReactNode;
 };
 
+type ExtraAction<T> = {
+  label: string;
+  icon: React.ReactNode;
+  variant?: 'default' | 'secondary' | 'outline' | 'destructive';
+  onClick: (item: T) => void;
+};
+
 interface AdminTableProps<T> {
   data: T[];
   columns: Column<T>[];
@@ -28,9 +35,10 @@ interface AdminTableProps<T> {
   onView?: (item: T) => void;
   onCreate?: () => void;
   searchPlaceholder?: string;
+  extraActions?: ExtraAction<T>[];
 }
 
-export function AdminTable<T extends { id?: string | number }>({
+export function AdminTable<T extends { _id?: string | number }>({
   data,
   columns,
   onEdit,
@@ -38,6 +46,7 @@ export function AdminTable<T extends { id?: string | number }>({
   onView,
   onCreate,
   searchPlaceholder = 'Search...',
+  extraActions = [],
 }: AdminTableProps<T>) {
   const [query, setQuery] = React.useState('');
 
@@ -74,8 +83,8 @@ export function AdminTable<T extends { id?: string | number }>({
             {columns.map((col) => (
               <TableHead key={col.key as string}>{col.label}</TableHead>
             ))}
-            {(onEdit || onDelete || onView) && (
-              <TableHead className="w-[120px]">Actions</TableHead>
+            {(onEdit || onDelete || onView || extraActions.length > 0) && (
+              <TableHead className="w-[180px]">Actions</TableHead>
             )}
           </TableRow>
         </TableHeader>
@@ -91,7 +100,7 @@ export function AdminTable<T extends { id?: string | number }>({
             </TableRow>
           ) : (
             filtered.map((item) => (
-              <TableRow key={item.id || JSON.stringify(item)}>
+              <TableRow key={item._id || JSON.stringify(item)}>
                 {columns.map((col) => (
                   <TableCell key={col.key as string}>
                     {col.render
@@ -99,8 +108,8 @@ export function AdminTable<T extends { id?: string | number }>({
                       : String(item[col.key as keyof T])}
                   </TableCell>
                 ))}
-                {(onEdit || onDelete || onView) && (
-                  <TableCell className="flex gap-2">
+                {(onEdit || onDelete || onView || extraActions.length > 0) && (
+                  <TableCell className="flex gap-2 flex-wrap">
                     {onView && (
                       <Button
                         size="sm"
@@ -131,6 +140,18 @@ export function AdminTable<T extends { id?: string | number }>({
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     )}
+                    {extraActions.map((action, idx) => (
+                      <Button
+                        key={idx}
+                        size="sm"
+                        variant={action.variant || 'outline'}
+                        onClick={() => action.onClick(item)}
+                        aria-label={action.label}
+                        title={action.label}
+                      >
+                        {action.icon}
+                      </Button>
+                    ))}
                   </TableCell>
                 )}
               </TableRow>

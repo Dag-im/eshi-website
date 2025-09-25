@@ -1,5 +1,7 @@
+// services.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
 
 export const useServices = () => {
@@ -34,7 +36,15 @@ export const useCreateService = () => {
       const res = await privateApi.post('/services', data);
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['services'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['services'] });
+      toast.success('Service created successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to create service.'
+      );
+    },
   });
 };
 
@@ -51,7 +61,15 @@ export const useUpdateService = () => {
       const res = await privateApi.put(`/services/${id}`, data);
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['services'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['services'] });
+      toast.success('Service updated successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to update service.'
+      );
+    },
   });
 };
 
@@ -61,6 +79,14 @@ export const useDeleteService = () => {
     mutationFn: async (id: string) => {
       await privateApi.delete(`/services/${id}`);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['services'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['services'] });
+      toast.success('Service deleted successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to delete service.'
+      );
+    },
   });
 };

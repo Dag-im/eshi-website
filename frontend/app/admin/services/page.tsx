@@ -5,7 +5,7 @@ import { useDeleteService, useServices } from '@/lib/api/useService';
 import { useRouter } from 'next/navigation';
 
 interface Service {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   icon: string;
@@ -31,12 +31,12 @@ export default function ServicesPage() {
   };
 
   const handleEdit = (item: Service) => {
-    router.push(`/admin/services/edit/${item.id}`);
+    router.push(`/admin/services/edit/${item._id}`);
   };
 
   const handleDelete = (item: Service) => {
     if (confirm('Are you sure you want to delete this service?')) {
-      deleteMutation.mutate(item.id);
+      deleteMutation.mutate(item._id);
     }
   };
 

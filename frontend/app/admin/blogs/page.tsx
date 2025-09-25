@@ -5,7 +5,7 @@ import { useBlogs, useDeleteBlog } from '@/lib/api/useBlogs';
 import { useRouter } from 'next/navigation';
 
 interface Blog {
-  id: string;
+  _id: string;
   title: string;
   excerpt: string;
   category: string;
@@ -48,12 +48,12 @@ export default function BlogsPage() {
   };
 
   const handleEdit = (item: Blog) => {
-    router.push(`/admin/blogs/edit/${item.id}`);
+    router.push(`/admin/blogs/edit/${item._id}`);
   };
 
   const handleDelete = (item: Blog) => {
     if (confirm('Are you sure you want to delete this blog?')) {
-      deleteMutation.mutate(item.id);
+      deleteMutation.mutate(item._id);
     }
   };
 

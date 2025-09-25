@@ -10,7 +10,8 @@
     "lint": "eslint src --ext .ts --fix",
     "test": "jest",
     "test:watch": "jest --watch",
-    "seed": "ts-node src/seeds/seed.ts"
+    "seed": "ts-node src/seeds/seed.ts",
+    "seed-pres": "ts-node src/seeds/seed-presentations.ts"
   },
   "keywords": [],
   "author": "",

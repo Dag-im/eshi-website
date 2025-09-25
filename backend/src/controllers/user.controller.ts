@@ -34,3 +34,11 @@ export async function deleteUser(req: Request, res: Response) {
   await userService.deleteUser(id, adminId);
   res.status(204).send();
 }
+
+// controllers/user.controller.ts
+export async function resetPasswordByAdmin(req: Request, res: Response) {
+  const { id } = req.params;
+  const adminId = (req as any).user.sub;
+  const user = await userService.resetUserPassword(id, adminId);
+  res.json({ message: 'Password reset to default. User must change it at next login.', user });
+}

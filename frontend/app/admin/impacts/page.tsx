@@ -5,7 +5,7 @@ import { useDeleteImpact, useImpacts } from '@/lib/api/useImpact';
 import { useRouter } from 'next/navigation';
 
 interface Impact {
-  id: string;
+  _id: string;
   name: string;
   desc: string;
   stat: string;
@@ -20,16 +20,6 @@ const impactColumns = [
     render: (item: Impact) => item.desc.slice(0, 50) + '...',
   },
   { key: 'stat', label: 'Stat' },
-  {
-    key: 'logoUrl',
-    label: 'Logo',
-    render: (item: Impact) =>
-      item.logoUrl ? (
-        <img src={item.logoUrl} alt="Logo" className="h-10 w-10 object-cover" />
-      ) : (
-        'No Logo'
-      ),
-  },
 ];
 
 export default function ImpactsPage() {
@@ -42,12 +32,12 @@ export default function ImpactsPage() {
   };
 
   const handleEdit = (item: Impact) => {
-    router.push(`/admin/impacts/edit/${item.id}`);
+    router.push(`/admin/impacts/edit/${item._id}`);
   };
 
   const handleDelete = (item: Impact) => {
     if (confirm('Are you sure you want to delete this impact?')) {
-      deleteMutation.mutate(item.id);
+      deleteMutation.mutate(item._id);
     }
   };
 

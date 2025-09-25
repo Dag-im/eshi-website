@@ -62,7 +62,7 @@ export const ImpactForm: React.FC<ImpactFormProps> = ({ item, onSuccess }) => {
     formData.append('name', values.name);
     formData.append('desc', values.desc);
     formData.append('stat', values.stat);
-    if (values.logo) formData.append('logo', values.logo);
+    if (values.logo) formData.append('image', values.logo); // Changed from 'logo' to 'file' to match Multer config
 
     try {
       if (isEdit && item?.id) {

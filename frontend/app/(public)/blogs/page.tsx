@@ -4,9 +4,10 @@ import BlogFilters from '@/components/blogs/BlogFilters';
 import BlogList from '@/components/blogs/BlogLIst';
 import BlogSearch from '@/components/blogs/BlogSearch';
 import { AuroraText } from '@/components/magicui/aurora-text';
-
 import { Particles } from '@/components/magicui/particles';
 import Pagination from '@/components/shared/Pagination';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useBlogs } from '@/lib/api/useBlogs';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
@@ -19,112 +20,6 @@ type Blog = {
   category: string;
   date: string;
 };
-
-const mockBlogs: Blog[] = [
-  {
-    id: 1,
-    title: 'Empowering Local NGOs with Capacity Building',
-    excerpt:
-      'Discover how ESHI equips grassroots organizations with tools for sustainable impact.',
-    slug: 'empowering-local-ngos',
-    imageUrl:
-      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
-    category: 'Capacity Building',
-    date: '2025-08-15',
-  },
-  {
-    id: 2,
-    title: 'Project Cycle Management: A Path to Success',
-    excerpt:
-      "Learn how ESHI's workshops transform project delivery for CBOs and CSOs.",
-    slug: 'project-cycle-management',
-    imageUrl:
-      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
-    category: 'Project Management',
-    date: '2025-07-20',
-  },
-  {
-    id: 3,
-    title: 'Sustainable Funding for Grassroots Impact',
-    excerpt: 'Explore strategies for NGOs to achieve financial independence.',
-    slug: 'sustainable-funding-ngos',
-    imageUrl:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop',
-    category: 'Funding & Sustainability',
-    date: '2025-06-10',
-  },
-  {
-    id: 4,
-    title: 'Monitoring and Evaluation Best Practices',
-    excerpt: 'Insights into effective M&E protocols for local organizations.',
-    slug: 'monitoring-evaluation-best-practices',
-    imageUrl:
-      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop',
-    category: 'Monitoring & Evaluation',
-    date: '2025-05-05',
-  },
-  {
-    id: 5,
-    title: "Case Study: Ethiopia Women's Microsavings Groups",
-    excerpt: 'A deep dive into successful capacity building in Ethiopia.',
-    slug: 'case-study-ethiopia-microsavings',
-    imageUrl:
-      'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=800&auto=format&fit=crop',
-    category: 'Case Studies',
-    date: '2025-04-15',
-  },
-  {
-    id: 6,
-    title: 'Localization in International Aid',
-    excerpt: 'Why funding local orgs directly leads to better outcomes.',
-    slug: 'localization-international-aid',
-    imageUrl:
-      'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop',
-    category: 'Capacity Building',
-    date: '2025-03-20',
-  },
-  {
-    id: 7,
-    title: 'Data Collection and Analysis for NGOs',
-    excerpt: 'Tools and methods for evidence-based reporting.',
-    slug: 'data-collection-analysis-ngos',
-    imageUrl:
-      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
-    category: 'Monitoring & Evaluation',
-    date: '2025-02-10',
-  },
-  {
-    id: 8,
-    title: 'Overcoming Financial Crises in Grassroots Orgs',
-    excerpt: 'Strategies to build resilient funding models.',
-    slug: 'overcoming-financial-crises-grassroots',
-    imageUrl:
-      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
-    category: 'Funding & Sustainability',
-    date: '2025-01-05',
-  },
-  {
-    id: 9,
-    title: 'Virtual Workshops for Global Impact',
-    excerpt: 'How Zoom-based follow-ups enhance project management.',
-    slug: 'virtual-workshops-global-impact',
-    imageUrl:
-      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
-    category: 'Project Management',
-    date: '2024-12-15',
-  },
-  {
-    id: 10,
-    title: 'Case Study: Kenya Rescue Centre',
-    excerpt: 'Success stories from Starkid School and Rescue Centre.',
-    slug: 'case-study-kenya-rescue-centre',
-    imageUrl:
-      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
-    category: 'Case Studies',
-    date: '2024-11-20',
-  },
-  // Add more if needed
-];
 
 const categories = [
   'All',
@@ -150,25 +45,35 @@ export default function BlogsPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Filter blogs
-  const filteredBlogs = mockBlogs.filter((blog) => {
-    const matchesSearch =
-      blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === 'All' || blog.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+  // Fetch blogs using the useBlogs hook
+  const { data, isLoading, error } = useBlogs({
+    page: currentPage,
+    limit: BLOGS_PER_PAGE,
+    category: selectedCategory === 'All' ? undefined : selectedCategory,
   });
 
-  // Pagination
-  const totalPages = Math.ceil(filteredBlogs.length / BLOGS_PER_PAGE);
+  // Extract blogs and total count from API response
+  const blogsFromApi = data?.blogs || [];
+  const totalBlogsFromApi = data?.total || 0;
+
+  // Filter blogs based on search query (frontend filtering)
+  const filteredBlogs = blogsFromApi.filter((blog: Blog) =>
+    searchQuery
+      ? blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+      : true
+  );
+
+  // Apply pagination to filtered blogs
+  const totalBlogs = filteredBlogs.length;
+  const totalPages = Math.ceil(totalBlogs / BLOGS_PER_PAGE);
   const paginatedBlogs = filteredBlogs.slice(
     (currentPage - 1) * BLOGS_PER_PAGE,
     currentPage * BLOGS_PER_PAGE
   );
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indian-khaki via-albescent-white  to-albescent-white">
+    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indian-khaki via-albescent-white to-albescent-white">
       {/* Background effects */}
       <Particles
         className="absolute inset-0 z-0"
@@ -212,8 +117,29 @@ export default function BlogsPage() {
           />
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: BLOGS_PER_PAGE }).map((_, index) => (
+              <div key={index} className="space-y-4">
+                <Skeleton className="h-48 w-full rounded-xl bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-6 w-3/4 rounded bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-4 w-5/6 rounded bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-4 w-1/2 rounded bg-[var(--color-rangitoto)]/10" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="text-center text-red-500">
+            Failed to load blogs. Please try again later.
+          </div>
+        )}
+
         {/* Blog List */}
-        <BlogList blogs={paginatedBlogs} />
+        {!isLoading && !error && <BlogList blogs={paginatedBlogs} />}
 
         {/* Pagination */}
         {totalPages > 1 && (

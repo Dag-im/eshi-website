@@ -7,8 +7,7 @@ export interface IUser extends Document {
   role: 'admin';
   isActive: boolean;
   refreshTokenHash?: string | null;
-  passwordResetTokenHash?: string | null;
-  passwordResetExpiresAt?: Date | null;
+  mustChangePassword: boolean;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -19,8 +18,7 @@ const UserSchema = new Schema<IUser>(
     role: { type: String, enum: ['admin'], default: 'admin' },
     isActive: { type: Boolean, default: true },
     refreshTokenHash: { type: String, default: null },
-    passwordResetTokenHash: { type: String, default: null },
-    passwordResetExpiresAt: { type: Date, default: null },
+    mustChangePassword: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

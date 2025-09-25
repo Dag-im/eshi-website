@@ -2,12 +2,12 @@
 
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { BorderBeam } from '@/components/magicui/border-beam';
-
 import { Particles } from '@/components/magicui/particles';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useSubmitContact } from '@/lib/api/useContact'; // Import the hook
 import { motion, useInView } from 'framer-motion';
 import { Mail, MapPin, Phone, Send } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -58,10 +58,12 @@ export default function ContactUsPage() {
     email: '',
     message: '',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(
     null
   );
+
+  // Initialize the useSubmitContact hook
+  const { mutate: submitContact, isPending: isSubmitting } = useSubmitContact();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -69,23 +71,28 @@ export default function ContactUsPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitStatus(null);
 
-    // Simulate form submission to admin
-    try {
-      // In a real app, this would POST to an API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
-      setSubmitStatus('error');
-      console.error('Form submission error:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Use the hook to submit the form data
+    submitContact(
+      {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      },
+      {
+        onSuccess: () => {
+          setSubmitStatus('success');
+          setFormData({ name: '', email: '', message: '' });
+        },
+        onError: (error) => {
+          setSubmitStatus('error');
+          console.error('Form submission error:', error);
+        },
+      }
+    );
   };
 
   return (

@@ -1,5 +1,7 @@
+// presentations.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
 
 export const usePresentations = () => {
@@ -30,7 +32,15 @@ export const useCreatePresentation = () => {
       const res = await privateApi.post('/presentation', data);
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['presentations'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['presentations'] });
+      toast.success('Presentation created successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to create presentation.'
+      );
+    },
   });
 };
 
@@ -47,7 +57,15 @@ export const useUpdatePresentation = () => {
       const res = await privateApi.put(`/presentation/${id}`, data);
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['presentations'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['presentations'] });
+      toast.success('Presentation updated successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to update presentation.'
+      );
+    },
   });
 };
 
@@ -57,6 +75,14 @@ export const useDeletePresentation = () => {
     mutationFn: async (id: string) => {
       await privateApi.delete(`/presentation/${id}`);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['presentations'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['presentations'] });
+      toast.success('Presentation deleted successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to delete presentation.'
+      );
+    },
   });
 };

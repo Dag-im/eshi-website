@@ -38,6 +38,8 @@ router.put(
 
 router.delete('/:id', authGuard, asyncHandler(userCtrl.deleteUser));
 
+router.post('/:id/reset-password', authGuard, asyncHandler(userCtrl.resetPasswordByAdmin));
+
 router.use(errorHandler);
 
 export default router;

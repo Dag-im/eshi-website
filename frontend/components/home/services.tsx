@@ -1,56 +1,126 @@
 'use client';
 
 import { AuroraText } from '@/components/magicui/aurora-text';
-
 import { Particles } from '@/components/magicui/particles';
-import { motion } from 'framer-motion';
-import { BarChart, BookOpen, Globe, Users } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useServices } from '@/lib/api/useService';
+import { easeOut, motion } from 'framer-motion';
+import { useEffect } from 'react';
 import { BorderBeam } from '../magicui/border-beam';
 
-type Service = {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-};
+import {
+  Activity,
+  Bell,
+  Book,
+  Calendar,
+  Camera,
+  ChartBar,
+  ChartPie,
+  Check,
+  Clipboard,
+  Cloud,
+  Code,
+  Compass,
+  Cpu,
+  Database,
+  FileText,
+  Flag,
+  Folder,
+  Gift,
+  Globe,
+  Heart,
+  Home,
+  Image,
+  Layers,
+  LifeBuoy,
+  Lightbulb,
+  List,
+  Loader,
+  Lock,
+  Mail,
+  Map,
+  Monitor,
+  Moon,
+  Music,
+  PenTool,
+  Phone,
+  Rocket,
+  Search,
+  Settings,
+  Shield,
+  ShoppingCart,
+  Sliders,
+  Star,
+  Sun,
+  Target,
+  ThumbsUp,
+  TrendingUp,
+  Truck,
+  User,
+  Wallet,
+  Wrench,
+} from 'lucide-react';
 
-const eshiServices: Service[] = [
-  {
-    id: '1',
-    title: 'Project Cycle Management Training',
-    description:
-      'Comprehensive four-month workshop series covering the full project cycle, with in-person and virtual sessions to embed effective management principles.',
-    icon: <BookOpen size={48} />,
-  },
-  {
-    id: '2',
-    title: 'Monitoring and Evaluation',
-    description:
-      'Designing and implementing M&E protocols, including data collection, analysis, and reporting to demonstrate evidence-based results.',
-    icon: <BarChart size={48} />,
-  },
-  {
-    id: '3',
-    title: 'Capacity Building for NGOs',
-    description:
-      'Empowering local NGOs, CBOs, and CSOs with tools and skills to achieve sustainability and secure funding independently.',
-    icon: <Users size={48} />,
-  },
-  {
-    id: '4',
-    title: 'Strategic Program Support',
-    description:
-      'Providing tailored follow-up support over eight months to ensure organizations integrate project management and evaluation practices effectively.',
-    icon: <Globe size={48} />,
-  },
-];
+const iconMap: Record<
+  string,
+  React.ComponentType<{ className?: string; size?: number }>
+> = {
+  Activity,
+  Bell,
+  Book,
+  Camera,
+  Check,
+  Code,
+  Globe,
+  Heart,
+  Home,
+  Lock,
+  Mail,
+  Map,
+  Phone,
+  Star,
+  User,
+  Calendar,
+  ChartBar,
+  ChartPie,
+  Clipboard,
+  Cloud,
+  Compass,
+  Cpu,
+  Database,
+  FileText,
+  Flag,
+  Folder,
+  Gift,
+  Image,
+  Layers,
+  LifeBuoy,
+  Lightbulb,
+  List,
+  Loader,
+  Monitor,
+  Moon,
+  Music,
+  PenTool,
+  Rocket,
+  Search,
+  Settings,
+  Shield,
+  ShoppingCart,
+  Sliders,
+  Sun,
+  Target,
+  ThumbsUp,
+  TrendingUp,
+  Truck,
+  Wallet,
+  Wrench,
+};
 
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.2 } },
 } as const;
-
-import { easeOut } from 'framer-motion';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
@@ -62,11 +132,14 @@ const cardVariants = {
   },
 };
 
-export default function Services({
-  services = eshiServices,
-}: {
-  services?: Service[];
-}) {
+export default function Services() {
+  const { data: services, isLoading, error } = useServices();
+
+  // Debug API response
+  useEffect(() => {
+    console.log('Services data:', services);
+  }, [services]);
+
   return (
     <section className="relative pb-16 overflow-hidden bg-transparent">
       {/* Background effects */}
@@ -81,8 +154,7 @@ export default function Services({
       <motion.div
         className="max-w-7xl mx-auto px-6 relative z-10"
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+        animate="visible"
         variants={containerVariants}
       >
         {/* Heading */}
@@ -111,29 +183,60 @@ export default function Services({
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7"
           variants={containerVariants}
         >
-          {services.map((service) => (
-            <motion.div
-              key={service.id}
-              variants={cardVariants}
-              className="relative p-8 bg-avocado/75 backdrop-blur-2xl rounded-3xl shadow-xl flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:bg-[var(--color-rangitoto)]/45 cursor-pointer"
-            >
-              <BorderBeam
-                size={150}
-                duration={6}
-                colorFrom="var(--color-indian-khaki)"
-                colorTo="var(--color-lemon-grass)"
-              />
-              <div className="w-36 h-36 mb-0 flex items-center justify-center text-[var(--color-deco)]">
-                {service.icon}
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="relative p-8 bg-avocado/75 backdrop-blur-2xl rounded-3xl shadow-xl flex flex-col items-center text-center"
+              >
+                <BorderBeam
+                  size={150}
+                  duration={6}
+                  colorFrom="var(--color-indian-khaki)"
+                  colorTo="var(--color-lemon-grass)"
+                />
+                <Skeleton className="w-20 h-20 rounded-full mb-6 bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-6 w-32 mb-4 bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-4 w-48 bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-4 w-40 mt-2 bg-[var(--color-rangitoto)]/10" />
               </div>
-              <h3 className="text-lg md:text-xl font-bold mb-3 text-[var(--color-albescent-white)]">
-                {service.title}
-              </h3>
-              <p className="text-sm text-[var(--color-albescent-white)]/80">
-                {service.description}
-              </p>
-            </motion.div>
-          ))}
+            ))
+          ) : error ? (
+            <div className="text-center text-red-500 col-span-full">
+              Failed to load services. Please try again later.
+            </div>
+          ) : !services || services.length === 0 ? (
+            <div className="text-center text-[var(--color-albescent-white)]/70 col-span-full">
+              No services available at the moment.
+            </div>
+          ) : (
+            services.map((service: any, key: any) => {
+              const IconComponent = iconMap[service.icon] ?? Activity;
+              return (
+                <motion.div
+                  key={key}
+                  variants={cardVariants}
+                  className="relative p-8 bg-avocado/75 backdrop-blur-2xl rounded-3xl shadow-xl flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:bg-[var(--color-rangitoto)]/45 cursor-pointer"
+                >
+                  <BorderBeam
+                    size={150}
+                    duration={6}
+                    colorFrom="var(--color-indian-khaki)"
+                    colorTo="var(--color-lemon-grass)"
+                  />
+                  <div className="w-36 h-36 mb-0 flex items-center justify-center text-[var(--color-deco)]">
+                    <IconComponent size={64} />
+                  </div>
+                  <h3 className="text-lg md:text-xl font-bold mb-3 text-[var(--color-albescent-white)]">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-[var(--color-albescent-white)]/80">
+                    {service.description}
+                  </p>
+                </motion.div>
+              );
+            })
+          )}
         </motion.div>
       </motion.div>
     </section>

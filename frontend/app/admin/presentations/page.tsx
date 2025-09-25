@@ -8,7 +8,7 @@ import {
 import { useRouter } from 'next/navigation';
 
 interface Presentation {
-  id: string;
+  _id: string;
   title: string;
   description: string;
 }
@@ -32,12 +32,12 @@ export default function PresentationsPage() {
   };
 
   const handleEdit = (item: Presentation) => {
-    router.push(`/admin/presentations/edit/${item.id}`);
+    router.push(`/admin/presentations/edit/${item._id}`);
   };
 
   const handleDelete = (item: Presentation) => {
     if (confirm('Are you sure you want to delete this presentation?')) {
-      deleteMutation.mutate(item.id);
+      deleteMutation.mutate(item._id);
     }
   };
 

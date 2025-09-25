@@ -18,20 +18,27 @@ export async function getUser(id: string) {
     '-passwordHash -refreshTokenHash -passwordResetTokenHash -passwordResetExpiresAt'
   );
   if (!user) throw new CustomError('User not found.', 404);
-  return { id: user._id, email: user.email, name: user.name, role: user.role };
+  return {
+    id: user._id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    mustChangePassword: user.mustChangePassword,
+  };
 }
 
 export async function createUser(data: { name: string; email: string }, adminId: string) {
   const existing = await UserModel.findOne({ email: data.email });
   if (existing) throw new CustomError('Email already in use.', 400);
 
-  const passwordHash = await bcrypt.hash('ADMIN1234', 10);
+  const passwordHash = await bcrypt.hash('ADMIN@123', 10);
 
   const user = await UserModel.create({
     name: data.name,
     email: data.email,
     passwordHash,
     isActive: true,
+    mustChangePassword: true,
   });
 
   logger.info({ action: 'user_created', userId: user._id, adminId });
@@ -55,4 +62,21 @@ export async function deleteUser(id: string, adminId: string) {
   if (!user) throw new CustomError('User not found.', 404);
   logger.info({ action: 'user_deleted', userId: id, adminId });
   return user._id;
+}
+
+// services/user.service.ts
+export async function resetUserPassword(userId: string, adminId: string) {
+  const defaultPassword = 'ADMIN@123'; // or configurable from env
+  const passwordHash = await bcrypt.hash(defaultPassword, 10);
+
+  const user = await UserModel.findByIdAndUpdate(
+    userId,
+    { passwordHash, mustChangePassword: true },
+    { new: true }
+  ).select('-passwordHash');
+
+  if (!user) throw new CustomError('User not found.', 404);
+
+  logger.info({ action: 'password_reset', userId, adminId });
+  return user;
 }

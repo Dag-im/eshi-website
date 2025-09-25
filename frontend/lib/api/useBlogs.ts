@@ -1,8 +1,9 @@
+// blogs.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
 
-// Public fetch blogs
 export const useBlogs = (params?: {
   page?: number;
   limit?: number;
@@ -18,7 +19,6 @@ export const useBlogs = (params?: {
   });
 };
 
-// Public fetch single blog
 export const useBlog = (slug: string) => {
   return useQuery({
     queryKey: ['blog', slug],
@@ -30,7 +30,6 @@ export const useBlog = (slug: string) => {
   });
 };
 
-// Admin create
 export const useCreateBlog = () => {
   const qc = useQueryClient();
   return useMutation({
@@ -41,11 +40,18 @@ export const useCreateBlog = () => {
       });
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['blogs'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['blogs'] });
+      toast.success('Blog created successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to create blog.'
+      );
+    },
   });
 };
 
-// Admin update
 export const useUpdateBlog = () => {
   const qc = useQueryClient();
   return useMutation({
@@ -56,17 +62,32 @@ export const useUpdateBlog = () => {
       });
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['blogs'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['blogs'] });
+      toast.success('Blog updated successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to update blog.'
+      );
+    },
   });
 };
 
-// Admin delete
 export const useDeleteBlog = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
       await privateApi.delete(`/blogs/${id}`);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['blogs'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['blogs'] });
+      toast.success('Blog deleted successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to delete blog.'
+      );
+    },
   });
 };

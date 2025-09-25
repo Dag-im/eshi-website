@@ -2,51 +2,20 @@
 
 import BlogCard from '@/components/blogs/BlogCard';
 import { AuroraText } from '@/components/magicui/aurora-text';
-
 import { Particles } from '@/components/magicui/particles';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useBlogs } from '@/lib/api/useBlogs';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 type Blog = {
-  id: number;
+  id: number | string;
   title: string;
   excerpt: string;
   slug: string;
   imageUrl: string;
 };
-
-type FeaturedBlogsProps = {
-  blogs?: Blog[];
-};
-
-const defaultBlogs: Blog[] = [
-  {
-    id: 1,
-    title: 'Empowering Local NGOs with Capacity Building',
-    excerpt:
-      'Discover how ESHI equips grassroots organizations with tools for sustainable impact.',
-    slug: 'empowering-local-ngos',
-    imageUrl:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 2,
-    title: 'Project Cycle Management: A Path to Success',
-    excerpt:
-      "Learn how ESHI's workshops transform project delivery for CBOs and CSOs.",
-    slug: 'project-cycle-management',
-    imageUrl:
-      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 3,
-    title: 'Sustainable Funding for Grassroots Impact',
-    excerpt: 'Explore strategies for NGOs to achieve financial independence.',
-    slug: 'sustainable-funding-ngos',
-    imageUrl:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop',
-  },
-];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -56,9 +25,26 @@ const containerVariants = {
   },
 } as const;
 
-export default function FeaturedBlogs({
-  blogs = defaultBlogs,
-}: FeaturedBlogsProps) {
+export default function FeaturedBlogs() {
+  const { data, isLoading, error } = useBlogs({ featured: true, limit: 3 });
+
+  // Extract blogs safely
+  const blogsFromApi = data?.blogs || [];
+
+  // Debug API response
+  useEffect(() => {
+    console.log('Featured Blogs data:', data);
+  }, [data]);
+
+  // Map API response to match Blog type
+  const mappedBlogs: Blog[] = blogsFromApi.map((item: any) => ({
+    id: item.id || item._id,
+    title: item.title,
+    excerpt: item.excerpt || item.description || item.summary || '',
+    slug: item.slug,
+    imageUrl: item.imageUrl || item.image || '/default-image.png',
+  }));
+
   return (
     <section className="relative py-24 md:py-32 overflow-hidden bg-transparent">
       {/* Background effects */}
@@ -72,8 +58,7 @@ export default function FeaturedBlogs({
 
       <motion.div
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+        animate="visible"
         variants={containerVariants}
         className="max-w-7xl mx-auto px-6 relative z-10"
       >
@@ -93,21 +78,35 @@ export default function FeaturedBlogs({
         </motion.div>
 
         {/* Blogs grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
-        >
-          {blogs.map((blog) => (
-            <BlogCard
-              key={blog.id}
-              id={blog.id}
-              title={blog.title}
-              excerpt={blog.excerpt}
-              slug={blog.slug}
-              imageUrl={blog.imageUrl}
-            />
-          ))}
-        </motion.div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="space-y-4">
+                <Skeleton className="w-full h-48 rounded-3xl bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-6 w-3/4 rounded bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-4 w-5/6 rounded bg-[var(--color-rangitoto)]/10" />
+                <Skeleton className="h-4 w-1/2 rounded bg-[var(--color-rangitoto)]/10" />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 col-span-full">
+            Failed to load featured blogs. Please try again later.
+          </div>
+        ) : mappedBlogs.length === 0 ? (
+          <div className="text-center text-[var(--color-rangitoto)]/70 col-span-full">
+            No featured blogs available at the moment.
+          </div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={containerVariants}
+          >
+            {mappedBlogs.map((blog) => (
+              <BlogCard key={blog.id} {...blog} />
+            ))}
+          </motion.div>
+        )}
 
         {/* View All button */}
         <motion.div variants={containerVariants} className="mt-12 text-center">

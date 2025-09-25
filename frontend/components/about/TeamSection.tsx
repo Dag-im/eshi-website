@@ -9,9 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useTeamMembers } from '@/lib/api/useTeam';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 
 type TeamMember = {
   id: number;
@@ -20,33 +22,6 @@ type TeamMember = {
   bio: string;
   imageUrl: string;
 };
-
-const teamMembers: TeamMember[] = [
-  {
-    id: 1,
-    name: 'Mark Johnson',
-    title: 'Founder & Principal Consultant, Associate Professor of Practice',
-    bio: "Mark Johnson has worked in and around the international aid and development industry for 35 years. Besides consulting work, he is Associate Professor of Practice at The New School’s graduate International Affairs department, teaching Project Cycle Management, Monitoring and Evaluation, and Worst and Better Practice in Aid and Development. Prior to joining The New School, Johnson worked in emergency relief, refugee resettlement, and humanitarian aid for the International Rescue Committee, Center for International Rehabilitation, United Nations, and Human Rights Watch. He has worked in Pakistan, Sudan, Ethiopia, Cote d'Ivoire, Sierra Leone, Liberia, Ghana, Nigeria, Kenya, Bosnia, Croatia, Nicaragua, Guatemala, El Salvador, Burundi, and the U.S. He has given lectures at Addis Ababa University, runs capacity-building workshops for national NGOs, and served three years as President of the New York Consortium of Evaluators, the regional American Evaluation Association chapter, and has been a member of the Eastern Evaluation Research Society for 15 years.",
-    imageUrl:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 2,
-    name: 'Henok Mengistu',
-    title: 'Monitoring and Evaluation Director',
-    bio: 'Henok Mengistu is Monitoring and Evaluation Director for Wide Horizons for Children, bringing expertise in data-driven program evaluation and capacity building for international humanitarian aid programs.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 3,
-    name: 'Yosef Akalu',
-    title: 'Principal Consultant',
-    bio: 'Yosef Akalu brings extensive experience in capacity building and program implementation for grassroots organizations in Ethiopia and beyond, focusing on sustainable development and community empowerment.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop',
-  },
-];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -125,12 +100,29 @@ const TeamMemberCard = memo(({ member }: { member: TeamMember }) => (
 TeamMemberCard.displayName = 'TeamMemberCard';
 
 export default function TeamSection() {
+  const { data: teamMembers, isLoading, error } = useTeamMembers();
+
+  // Debug API response
+  useEffect(() => {
+    console.log('Team Members data:', teamMembers);
+  }, [teamMembers]);
+
+  // Map API response to match TeamMember type (handle image vs. imageUrl)
+  const mappedTeamMembers: TeamMember[] = (teamMembers || []).map(
+    (item: any) => ({
+      id: item.id || item._id,
+      name: item.name,
+      title: item.title,
+      bio: item.bio,
+      imageUrl: item.imageUrl || item.image || '/default-image.png', // Fallback image
+    })
+  );
+
   return (
     <motion.section
       variants={containerVariants}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
+      animate="visible"
       className="mb-20"
     >
       <motion.h2
@@ -140,9 +132,28 @@ export default function TeamSection() {
         Our Team
       </motion.h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {teamMembers.map((member) => (
-          <TeamMemberCard key={member.id} member={member} />
-        ))}
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="space-y-4">
+              <Skeleton className="w-full h-56 md:h-64 rounded-t-3xl bg-[var(--color-rangitoto)]/10" />
+              <Skeleton className="h-6 w-3/4 mx-auto rounded bg-[var(--color-rangitoto)]/10" />
+              <Skeleton className="h-4 w-1/2 mx-auto rounded bg-[var(--color-rangitoto)]/10" />
+              <Skeleton className="h-4 w-5/6 mx-auto rounded bg-[var(--color-rangitoto)]/10" />
+            </div>
+          ))
+        ) : error ? (
+          <div className="text-center text-red-500 col-span-full">
+            Failed to load team members. Please try again later.
+          </div>
+        ) : !mappedTeamMembers || mappedTeamMembers.length === 0 ? (
+          <div className="text-center text-[var(--color-rangitoto)]/70 col-span-full">
+            No team members available at the moment.
+          </div>
+        ) : (
+          mappedTeamMembers.map((member) => (
+            <TeamMemberCard key={member.id} member={member} />
+          ))
+        )}
       </div>
     </motion.section>
   );

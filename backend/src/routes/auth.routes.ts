@@ -46,19 +46,10 @@ router.post('/refresh', asyncHandler(authCtrl.refresh));
 router.post('/logout', asyncHandler(authCtrl.logout));
 
 router.post(
-  '/forgot-password',
+  '/reset-password',
   resetLimiter,
   validationMiddleware([
-    body('email').isEmail().withMessage('Please provide a valid email address.'),
-  ]),
-  asyncHandler(authCtrl.forgotPassword)
-);
-
-router.post(
-  '/reset-password',
-  validationMiddleware([
-    body('email').isEmail().withMessage('Please provide a valid email address.'),
-    body('token').exists().withMessage('Reset token is required.'),
+    body('userId').isString().withMessage('User ID is required.'),
     body('newPassword')
       .isLength({ min: 8 })
       .withMessage('New password must be at least 8 characters long.'),

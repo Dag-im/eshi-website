@@ -1,8 +1,9 @@
+// hero.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
 
-// Public fetch
 export const useHero = () => {
   return useQuery({
     queryKey: ['hero'],
@@ -13,7 +14,6 @@ export const useHero = () => {
   });
 };
 
-// Admin update
 export const useUpdateHero = () => {
   const qc = useQueryClient();
   return useMutation({
@@ -24,6 +24,14 @@ export const useUpdateHero = () => {
       });
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['hero'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['hero'] });
+      toast.success('Hero updated successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to update hero.'
+      );
+    },
   });
 };

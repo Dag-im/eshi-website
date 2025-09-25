@@ -5,7 +5,7 @@ import { useContactMessages } from '@/lib/api/useContact';
 import { useRouter } from 'next/navigation';
 
 interface Contact {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   message: string;
@@ -38,7 +38,7 @@ export default function ContactsPage() {
   const { data: contacts, isLoading } = useContactMessages();
 
   const handleView = (item: Contact) => {
-    router.push(`/admin/contacts/view/${item.id}`);
+    router.push(`/admin/contact/view/${item._id}`);
   };
 
   if (isLoading) {

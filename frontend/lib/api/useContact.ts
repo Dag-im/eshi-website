@@ -1,8 +1,9 @@
+// contact.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
 
-// Public contact form submission
 export const useSubmitContact = () => {
   return useMutation({
     mutationFn: async ({
@@ -20,12 +21,12 @@ export const useSubmitContact = () => {
   });
 };
 
-// Admin get all messages
 export const useContactMessages = () => {
   return useQuery({
     queryKey: ['contact-messages'],
     queryFn: async () => {
       const res = await privateApi.get('/contact');
+      console.log(res.data);
       return res.data;
     },
   });
@@ -49,6 +50,15 @@ export const useMarkMessageSeen = () => {
       const res = await privateApi.put(`/contact/${id}/mark-seen`);
       return res.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['contact-messages'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['contact-messages'] });
+      toast.success('Message marked as seen!');
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message ||
+          'Failed to mark message as seen.'
+      );
+    },
   });
 };

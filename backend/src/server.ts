@@ -17,7 +17,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/hero', heroRoutes);
 app.use('/api/impact', impactRoutes);
-app.use('/api/presentations', presentationRoutes);
+app.use('/api/presentation', presentationRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/blogs', blogRoutes);
