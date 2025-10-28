@@ -4,12 +4,9 @@ import { AuroraText } from '@/components/magicui/aurora-text';
 import { InteractiveHoverButton } from '@/components/magicui/interactive-hover-button';
 import { PulsatingButton } from '@/components/magicui/pulsating-button';
 import { AnimatePresence, motion } from 'framer-motion';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
 interface HeroProps {
   bgImages?: { src: string; alt: string }[];
@@ -64,15 +61,6 @@ export default function Hero({
     return () => clearInterval(id);
   }, [len, goTo]);
 
-  // Optional Lottie animation
-  const [animData, setAnimData] = useState<any>(null);
-  useEffect(() => {
-    fetch('/lotties/hero.json')
-      .then((r) => (r.ok ? r.json() : null))
-      .then(setAnimData)
-      .catch(() => setAnimData(null));
-  }, []);
-
   return (
     <section className="relative w-full h-screen overflow-hidden pt-10 bg-black">
       {/* HERO BACKGROUNDS */}
@@ -118,23 +106,6 @@ export default function Hero({
           })}
         </AnimatePresence>
       </div>
-
-      {/* LOTTIE ANIMATION */}
-      {animData && (
-        <div className="absolute inset-0 z-10 pointer-events-none">
-          <Lottie
-            animationData={animData}
-            loop
-            autoplay
-            style={{
-              width: '100%',
-              height: '100%',
-              opacity: 0.42,
-            }}
-            rendererSettings={{ preserveAspectRatio: 'xMidYMid slice' }}
-          />
-        </div>
-      )}
 
       {/* CONTENT */}
       <div className="relative z-20 flex flex-col items-center justify-center h-full text-center px-4">
