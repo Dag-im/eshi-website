@@ -21,14 +21,7 @@ type Blog = {
   date: string;
 };
 
-const categories = [
-  'All',
-  'Capacity Building',
-  'Project Management',
-  'Monitoring & Evaluation',
-  'Funding & Sustainability',
-  'Case Studies',
-];
+const categories = ['News', 'Health', 'Education', 'Other'];
 
 const BLOGS_PER_PAGE = 6;
 

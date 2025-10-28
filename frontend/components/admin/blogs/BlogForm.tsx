@@ -53,7 +53,7 @@ interface BlogFormProps {
   onSuccess?: () => void;
 }
 
-const categories = ['Tech', 'Business', 'Health', 'Education', 'Other'];
+const categories = ['News', 'Health', 'Education', 'Other'];
 
 export const BlogForm: React.FC<BlogFormProps> = ({ item, onSuccess }) => {
   const isEdit = !!item;

@@ -9,7 +9,7 @@ import { useHero } from '@/lib/api/useHero';
 export default function HomePage() {
   const { data: hero } = useHero();
   return (
-    <main className="bg-gradient-to-br from-indian-khaki via-albescent-white  to-albescent-white">
+    <main className="bg-green-50/50">
       <Hero bgImages={hero?.bgImages} />
       <AboutEshi />
       <Services />

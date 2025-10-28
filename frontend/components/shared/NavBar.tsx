@@ -24,7 +24,7 @@ export default function Navbar() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 w-full z-50 bg-lime-100 shadow-md"
+      className="fixed top-0 left-0 w-full z-50 bg-white shadow-md"
       initial={false}
       animate={false}
     >
@@ -43,12 +43,12 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-6">
-          <div className="flex gap-8 text-[var(--color-albescent-white)] font-medium">
+          <div className="flex gap-8 text-lemon-grass font-medium">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="hover:text-[var(--color-avocado)] transition-colors"
+                className="hover:text-rangitoto transition-colors"
               >
                 {link.name}
               </Link>
@@ -68,9 +68,9 @@ export default function Navbar() {
         <div className="md:hidden">
           <button onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? (
-              <X className="w-6 h-6 text-[var(--color-albescent-white)]" />
+              <X className="w-6 h-6 text-rangitoto" />
             ) : (
-              <Menu className="w-6 h-6 text-[var(--color-albescent-white)]" />
+              <Menu className="w-6 h-6 text-rangitoto" />
             )}
           </button>
         </div>
@@ -84,14 +84,14 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-[var(--color-rangitoto)] w-full shadow-md"
+            className="md:hidden bg-white w-full shadow-md"
           >
             <div className="flex flex-col items-center gap-6 py-6">
               {links.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-[var(--color-albescent-white)] text-lg font-medium hover:text-[var(--color-avocado)] transition-colors"
+                  className="text-lemon-grass text-lg font-medium hover:text-rangitoto transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.name}
