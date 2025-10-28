@@ -37,7 +37,7 @@ export default function BlogDetailPage({
 
   if (isLoading) {
     return (
-      <section className="relative min-h-screen bg-gradient-to-br from-albescent-white via-indian-khaki to-albescent-white">
+      <section className="relative min-h-screen bg-green-50/50">
         <Particles
           className="absolute inset-0 z-0"
           quantity={100}

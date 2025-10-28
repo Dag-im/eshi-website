@@ -24,7 +24,7 @@ export default function Navbar() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 w-full z-50 bg-[var(--color-rangitoto)] shadow-md"
+      className="fixed top-0 left-0 w-full z-50 bg-lime-100 shadow-md"
       initial={false}
       animate={false}
     >

@@ -17,7 +17,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="scroll-smooth">
+      <body className="scroll-smooth bg-green-50/50">
         <ClientQueryProvider>
           {isAdminRoute ? (
             <AdminLayout>{children}</AdminLayout>

@@ -49,7 +49,7 @@ export default function ImpactSection() {
   }));
 
   return (
-    <section className="relative py-24 px-6 bg-gradient-to-br from-deco/10 via-albescent-white/50 to-avocado/10 overflow-hidden">
+    <section className="relative py-24 px-6 bg-transparent overflow-hidden">
       {/* Subtle background elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-avocado/5 rounded-full blur-3xl animate-pulse-slow" />

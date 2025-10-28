@@ -12,7 +12,7 @@ import { motion } from 'framer-motion';
 
 export default function ServicesPage() {
   return (
-    <div className="min-h-screen bg-albescent-white text-rangitoto">
+    <div className="min-h-screen bg-green-50/50 text-rangitoto">
       {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center text-center py-24 px-6">
         <Particles
@@ -27,7 +27,7 @@ export default function ServicesPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative z-10 text-5xl md:text-6xl font-extrabold mb-6"
+          className="relative z-10 text-5xl md:text-6xl font-extrabold mb-6 pt-12"
         >
           <AuroraText
             className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[var(--color-rangitoto)]"
@@ -108,7 +108,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Process / Methodology */}
-      <section className="bg-lemon-grass/20 py-24 px-6">
+      <section className="py-24 px-6">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-6">
             Our Methodology

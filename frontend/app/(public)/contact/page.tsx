@@ -96,7 +96,7 @@ export default function ContactUsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-albescent-white via-indian-khaki to-albescent-white">
+    <div className="min-h-screen bg-green-50/50 text-rangitoto">
       {/* Background effects */}
       <Particles
         className="absolute inset-0 z-0"
@@ -107,7 +107,7 @@ export default function ContactUsPage() {
       />
 
       {/* Hero Section */}
-      <section className="relative py-24 px-6 overflow-hidden">
+      <section className="relative py-24 px-6 bg-transparent overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-avocado/5 rounded-full blur-3xl animate-pulse-slow" />
           <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-deco/5 rounded-full blur-3xl animate-pulse-slow delay-1000" />
@@ -117,7 +117,7 @@ export default function ContactUsPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="text-4xl md:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-avocado to-deco"
+            className="text-4xl md:text-6xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-avocado to-deco pt-12"
           >
             <AuroraText
               className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[var(--color-rangitoto)]"
@@ -165,7 +165,7 @@ export default function ContactUsPage() {
                 transition={{ duration: 0.3 }}
                 className="group"
               >
-                <Card className="relative rounded-2xl bg-deco backdrop-blur-xl border border-white/20 shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden">
+                <Card className="relative rounded-2xl bg-albescent-white/30 backdrop-blur-xl border border-white/20 shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden">
                   <BorderBeam
                     size={200}
                     duration={i * 4}
@@ -203,7 +203,7 @@ export default function ContactUsPage() {
             <h2 className="text-3xl font-bold text-rangitoto mb-8">
               Send a Message
             </h2>
-            <Card className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg overflow-hidden">
+            <Card className="rounded-2xl bg-albescent-white/10 backdrop-blur-xl border border-white/20 shadow-lg overflow-hidden">
               <BorderBeam
                 size={300}
                 duration={10}

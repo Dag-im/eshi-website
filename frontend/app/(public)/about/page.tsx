@@ -23,7 +23,7 @@ const childVariants = {
 
 export default function AboutPage() {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indian-khaki via-albescent-white  to-albescent-white">
+    <section className="relative min-h-screen overflow-hidden bg-green-50/50 pt-12">
       {/* Background effects */}
       <Particles
         className="absolute inset-0 z-0"

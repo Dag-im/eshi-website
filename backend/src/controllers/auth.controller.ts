@@ -12,15 +12,13 @@ export async function register(req: Request, res: Response) {
 export async function getProfile(req: Request, res: Response) {
   const userId = (req as any).user.sub;
   const user = await getUser(userId);
-  res
-    .status(200)
-    .json({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      mustChangePassword: user.mustChangePassword,
-    });
+  res.status(200).json({
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    mustChangePassword: user.mustChangePassword,
+  });
 }
 
 export async function login(req: Request, res: Response) {
@@ -35,12 +33,14 @@ export async function login(req: Request, res: Response) {
     secure: process.env.NODE_ENV === 'production' ? true : false,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/',
+    domain: process.env.NODE_ENV === 'production' ? '.eshiconsultancy.org' : 'localhost',
     maxAge: 1000 * 60 * 15, // 15 minutes
   });
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production' ? true : false,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    domain: process.env.NODE_ENV === 'production' ? 'eshiconsultancy.org' : 'localhost',
     path: '/',
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
@@ -64,6 +64,7 @@ export async function refresh(req: Request, res: Response) {
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/',
+    domain: process.env.NODE_ENV === 'production' ? '.eshiconsultancy.org' : 'localhost',
     maxAge: 1000 * 60 * 15, // 15 minutes
   });
   res.cookie('refreshToken', tokens.refreshToken, {
@@ -71,6 +72,7 @@ export async function refresh(req: Request, res: Response) {
     secure: process.env.NODE_ENV === 'production' ? true : false,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/',
+    domain: process.env.NODE_ENV === 'production' ? '.eshiconsultancy.org' : 'localhost',
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
   res.json({ message: 'Tokens refreshed successfully.' });
