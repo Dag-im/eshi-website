@@ -3,10 +3,22 @@ import { CustomError, verifyToken } from '../lib/jwt';
 import * as authService from '../services/auth.service';
 import { getUser } from '../services/user.service';
 
+function getCookieBaseOptions() {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? ('none' as const) : ('lax' as const),
+    path: '/',
+    ...(isProduction ? { domain: '.eshiconsultancy.org' } : {}),
+  };
+}
+
 export async function register(req: Request, res: Response) {
   const { email, password, name } = req.body;
   const user = await authService.registerAdmin(email, password, name, req.ip);
-  res.status(201).json({ id: user._id, email: user.email, name: user.name });
+  res.status(201).json({ id: user.id, email: user.email, name: user.name });
 }
 
 export async function getProfile(req: Request, res: Response) {
@@ -17,6 +29,7 @@ export async function getProfile(req: Request, res: Response) {
     email: user.email,
     name: user.name,
     role: user.role,
+    isActive: user.isActive,
     mustChangePassword: user.mustChangePassword,
   });
 }
@@ -28,27 +41,22 @@ export async function login(req: Request, res: Response) {
     password,
     req.ip
   );
+  const cookieOptions = getCookieBaseOptions();
+
   res.cookie('accessToken', accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' ? true : false,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    path: '/',
-    domain: process.env.NODE_ENV === 'production' ? '.eshiconsultancy.org' : 'localhost',
-    maxAge: 1000 * 60 * 15, // 15 minutes
+    ...cookieOptions,
+    maxAge: 1000 * 60 * 15,
   });
   res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' ? true : false,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    domain: process.env.NODE_ENV === 'production' ? 'eshiconsultancy.org' : 'localhost',
-    path: '/',
+    ...cookieOptions,
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
   res.json({
     user: {
-      id: user._id,
+      id: user.id,
       email: user.email,
       name: user.name,
+      isActive: user.isActive,
       role: user.role,
       mustChangePassword,
     },
@@ -59,20 +67,14 @@ export async function refresh(req: Request, res: Response) {
   const token = req.cookies?.refreshToken;
   if (!token) throw new CustomError('No refresh token provided. Please log in.', 401);
   const tokens = await authService.refreshTokens(token, req.ip);
+  const cookieOptions = getCookieBaseOptions();
+
   res.cookie('accessToken', tokens.accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    path: '/',
-    domain: process.env.NODE_ENV === 'production' ? '.eshiconsultancy.org' : 'localhost',
-    maxAge: 1000 * 60 * 15, // 15 minutes
+    ...cookieOptions,
+    maxAge: 1000 * 60 * 15,
   });
   res.cookie('refreshToken', tokens.refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production' ? true : false,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    path: '/',
-    domain: process.env.NODE_ENV === 'production' ? '.eshiconsultancy.org' : 'localhost',
+    ...cookieOptions,
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
   res.json({ message: 'Tokens refreshed successfully.' });
@@ -84,7 +86,10 @@ export async function logout(req: Request, res: Response) {
     const payload = verifyToken<{ sub: string }>(token);
     await authService.logoutUser(payload.sub, req.ip);
   }
-  res.clearCookie('refreshToken');
+  const cookieOptions = getCookieBaseOptions();
+
+  res.clearCookie('accessToken', cookieOptions);
+  res.clearCookie('refreshToken', cookieOptions);
   res.json({ message: 'Logged out successfully.' });
 }
 

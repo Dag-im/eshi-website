@@ -8,10 +8,10 @@ const footerLinks = [
   {
     title: 'Company',
     links: [
-      { name: 'About', href: '#about' },
-      { name: 'Services', href: '#services' },
-      { name: 'Team', href: '#team' },
-      { name: 'Blog', href: '#blog' },
+      { name: 'Home', href: '/' },
+      { name: 'About', href: '/about' },
+      { name: 'Services', href: '/services' },
+      { name: 'Contact', href: '/contact' },
     ],
   },
 ];
@@ -44,7 +44,7 @@ export default function Footer() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="hover:text-rangitoto transition-colors"
+                      className="hover:text-rangitoto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deco rounded-sm"
                     >
                       {link.name}
                     </Link>
@@ -71,8 +71,8 @@ export default function Footer() {
             <span>info@eshi-consulting.org</span>
           </div>
           <Link
-            href="/#contact"
-            className="mt-4 inline-block px-2 py-2 rounded-sm font-semibold bg-albescent-white text-center text-[var(--color-avocado)] hover:bg-[var(--color-deco)] hover:text-[var(--color-bg-rangitoto] transition-colors shadow-lg"
+            href="/contact"
+            className="mt-4 inline-block px-2 py-2 rounded-sm font-semibold bg-albescent-white text-center text-[var(--color-avocado)] hover:bg-[var(--color-deco)] hover:text-[var(--color-rangitoto)] transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deco"
           >
             Get in Touch
           </Link>

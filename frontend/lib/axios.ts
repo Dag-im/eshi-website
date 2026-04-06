@@ -1,8 +1,9 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { toast } from 'react-hot-toast';
+import { toast } from '../hooks/use-toast';
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
+  _skipAuthRedirect?: boolean;
 }
 
 export const privateApi = axios.create({
@@ -21,11 +22,34 @@ privateApi.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest: CustomAxiosRequestConfig | undefined = error.config;
+    const requestUrl = originalRequest?.url || '';
+    const isRefreshRequest = requestUrl.includes('/auth/refresh');
+    const isLoginRequest = requestUrl.includes('/auth/login');
+    const shouldSkipAuthRedirect = Boolean(originalRequest?._skipAuthRedirect);
 
-    // Prevent retrying refresh on itself
-    if (!originalRequest || originalRequest?.url?.includes('/auth/refresh')) {
-      toast.error('Session expired. Please log in again.');
-      window.location.href = '/login';
+    if (!originalRequest) {
+      toast({
+        variant: 'destructive',
+        title: 'Session expired',
+        description: 'Please log in again.',
+      });
+      window.location.href = '/admin/login';
+      return Promise.reject(error);
+    }
+
+    if (isRefreshRequest) {
+      if (!shouldSkipAuthRedirect) {
+        toast({
+          variant: 'destructive',
+          title: 'Session expired',
+          description: 'Please log in again.',
+        });
+        window.location.href = '/admin/login';
+      }
+      return Promise.reject(error);
+    }
+
+    if (isLoginRequest || shouldSkipAuthRedirect) {
       return Promise.reject(error);
     }
 
@@ -42,8 +66,12 @@ privateApi.interceptors.response.use(
         return privateApi(originalRequest);
       } catch {
         isRefreshing = false;
-        toast.error('Session expired. Please log in again.');
-        window.location.href = '/login';
+        toast({
+          variant: 'destructive',
+          title: 'Session expired',
+          description: 'Please log in again.',
+        });
+        window.location.href = '/admin/login';
       }
     }
 
@@ -51,7 +79,11 @@ privateApi.interceptors.response.use(
       (error.response?.data as { error?: { message?: string } })?.error
         ?.message || 'An error occurred.';
 
-    toast.error(errorMessage);
+    toast({
+      variant: 'destructive',
+      title: 'Request failed',
+      description: errorMessage,
+    });
     return Promise.reject(error);
   }
 );

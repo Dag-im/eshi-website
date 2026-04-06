@@ -1,6 +1,8 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt, { SignOptions } from 'jsonwebtoken';
+import { UserEntity } from '../entities/user.entity';
 import { config } from './config';
+import { getRepository } from './repository';
 
 if (!config.JWT_SECRET) throw new Error('JWT_SECRET not set');
 
@@ -37,21 +39,43 @@ interface AuthenticatedRequest extends Request {
   user?: any;
 }
 
-export function authenticate(req: AuthenticatedRequest, res: Response, next: Function) {
+export async function authenticate(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
   const token = req.cookies?.accessToken;
 
   if (!token) {
-    return res.status(401).json({ error: 'No access token provided' });
+    return res.status(401).json({ error: { message: 'No access token provided.' } });
   }
 
   try {
     const decoded = jwt.verify(token, SECRET) as any;
-    req.user = decoded;
-    console.log('Decoded JWT:', decoded);
+    const user = await getRepository(UserEntity).findOne({
+      where: { id: Number(decoded.sub) },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: { message: 'User not found.' } });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({ error: { message: 'Your account is disabled.' } });
+    }
+
+    req.user = {
+      id: String(user.id),
+      sub: String(user.id),
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive,
+      mustChangePassword: user.mustChangePassword,
+    };
 
     next();
   } catch {
-    return res.status(401).json({ error: 'Invalid or expired token' });
+    return res.status(401).json({ error: { message: 'Invalid or expired token.' } });
   }
 }
 

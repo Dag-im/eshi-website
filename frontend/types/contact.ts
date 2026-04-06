@@ -1,5 +1,5 @@
 export interface ContactMessage {
-  id: string;
+  id: number;
   name: string;
   email: string;
   message: string;

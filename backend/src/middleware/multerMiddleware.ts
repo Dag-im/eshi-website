@@ -1,11 +1,29 @@
 // src/middleware/multerMiddleware.ts
+import fs from 'fs';
 import multer from 'multer';
+import path from 'path';
+import crypto from 'crypto';
+import { config } from '../lib/config';
 import { CustomError } from '../lib/jwt';
 
-const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-const storage = multer.memoryStorage();
+const ensureUploadDirectory = () => {
+  fs.mkdirSync(config.UPLOAD_PATH, { recursive: true });
+};
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    ensureUploadDirectory();
+    cb(null, config.UPLOAD_PATH);
+  },
+  filename: (_req, file, cb) => {
+    const extension = path.extname(file.originalname) || '.bin';
+    const uniqueName = `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${extension}`;
+    cb(null, uniqueName);
+  },
+});
 
 import type { Request } from 'express';
 

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import { UserEntity } from '../entities/user.entity';
 import { CustomError, verifyToken } from '../lib/jwt';
-import { UserModel } from '../models/user.model';
+import { getRepository } from '../lib/repository';
 
 export const authGuard = async (req: Request, res: Response, next: NextFunction) => {
   let token: string | undefined;
@@ -21,12 +22,19 @@ export const authGuard = async (req: Request, res: Response, next: NextFunction)
   }
 
   const payload = verifyToken<{ sub: string; role: string }>(token);
-  const user = await UserModel.findById(payload.sub);
+  const user = await getRepository(UserEntity).findOne({ where: { id: Number(payload.sub) } });
 
-  if (!user || user.role !== 'admin') {
+  if (!user || !user.isActive || user.role !== 'admin') {
     throw new CustomError('Access denied. Admin privileges required.', 403);
   }
 
-  (req as any).user = { id: user._id?.toString(), role: user.role, email: user.email };
+  (req as any).user = {
+    id: String(user.id),
+    role: user.role,
+    email: user.email,
+    sub: String(user.id),
+    isActive: user.isActive,
+    mustChangePassword: user.mustChangePassword,
+  };
   next();
 };

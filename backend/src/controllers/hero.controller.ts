@@ -13,7 +13,7 @@ export async function updateHero(req: Request, res: Response) {
   const altsStr = req.body.alts;
   const files = (req.files as Express.Multer.File[]) || [];
 
-  let existing: { src?: string; alt: string; publicId?: string; file?: Express.Multer.File }[] = [];
+  let existing: { src?: string; alt: string; file?: Express.Multer.File }[] = [];
   let alts: string[] = [];
 
   try {

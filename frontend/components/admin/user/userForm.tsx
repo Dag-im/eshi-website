@@ -27,7 +27,7 @@ type UserFormValues = z.infer<typeof userSchema>;
 
 interface UserFormProps {
   item?: {
-    id: string;
+    id: number;
     name: string;
     email: string;
     isActive: boolean;
@@ -53,9 +53,20 @@ export const UserForm: React.FC<UserFormProps> = ({ item, onSuccess }) => {
   const onSubmit: SubmitHandler<UserFormValues> = async (values) => {
     try {
       if (isEdit && item?.id) {
-        await updateMutation.mutateAsync({ id: item.id, data: values });
+        await updateMutation.mutateAsync({
+          id: String(item.id),
+          data: {
+            name: values.name,
+            email: values.email,
+            isActive: values.isActive,
+          },
+        });
       } else {
-        await createMutation.mutateAsync(values);
+        await createMutation.mutateAsync({
+          name: values.name,
+          email: values.email,
+          isActive: values.isActive,
+        });
       }
       onSuccess?.();
     } catch (err) {
@@ -89,7 +100,12 @@ export const UserForm: React.FC<UserFormProps> = ({ item, onSuccess }) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Enter email" {...field} />
+                <Input
+                  type="email"
+                  placeholder="Enter email"
+                  {...field}
+                  autoComplete="email"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -102,11 +118,17 @@ export const UserForm: React.FC<UserFormProps> = ({ item, onSuccess }) => {
             <FormItem>
               <FormLabel>Active</FormLabel>
               <FormControl>
-                <input
-                  type="checkbox"
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                />
+                <label className="flex items-center gap-3 rounded-md border border-input px-3 py-2">
+                  <input
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="h-4 w-4"
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    Allow this user to sign in
+                  </span>
+                </label>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -114,7 +136,7 @@ export const UserForm: React.FC<UserFormProps> = ({ item, onSuccess }) => {
         />
         <Button
           type="submit"
-          className="w-full"
+          className="w-full bg-[var(--color-avocado)] hover:bg-[var(--color-rangitoto)] text-white"
           disabled={createMutation.isPending || updateMutation.isPending}
         >
           {(createMutation.isPending || updateMutation.isPending) && (

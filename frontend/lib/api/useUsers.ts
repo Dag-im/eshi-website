@@ -1,8 +1,8 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { toast } from 'react-hot-toast';
 import { privateApi } from '../axios';
+import { toast } from '../../hooks/use-toast';
 
 interface ApiErrorResponse {
   error?: {
@@ -37,18 +37,23 @@ export const useUser = (id: string) => {
 export const useCreateUser = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { name: string; email: string }) => {
+    mutationFn: async (data: { name: string; email: string; isActive: boolean }) => {
       const res = await privateApi.post('/users', data);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ['users'] });
-      toast.success('User created successfully.');
+      toast({
+        title: 'User created',
+        description: `Temporary password: ${data.temporaryPassword}`,
+      });
     },
     onError: (err: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        err.response?.data?.error?.message || 'Failed to create user.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to create user',
+        description: err.response?.data?.error?.message || 'Failed to create user.',
+      });
     },
   });
 };
@@ -62,19 +67,22 @@ export const useUpdateUser = () => {
       data,
     }: {
       id: string;
-      data: Partial<{ name: string; isActive: boolean }>;
+      data: Partial<{ name: string; email: string; isActive: boolean }>;
     }) => {
       const res = await privateApi.put(`/users/${id}`, data);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       qc.invalidateQueries({ queryKey: ['users'] });
-      toast.success('User updated successfully.');
+      qc.invalidateQueries({ queryKey: ['user', variables.id] });
+      toast({ title: 'User updated successfully' });
     },
     onError: (err: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        err.response?.data?.error?.message || 'Failed to update user.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to update user',
+        description: err.response?.data?.error?.message || 'Failed to update user.',
+      });
     },
   });
 };
@@ -88,12 +96,14 @@ export const useDeleteUser = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['users'] });
-      toast.success('User deleted successfully.');
+      toast({ title: 'User deleted successfully' });
     },
     onError: (err: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        err.response?.data?.error?.message || 'Failed to delete user.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to delete user',
+        description: err.response?.data?.error?.message || 'Failed to delete user.',
+      });
     },
   });
 };
@@ -106,16 +116,20 @@ export const useResetUserPassword = () => {
       const res = await privateApi.post(`/users/${id}/reset-password`);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (_, id) => {
       qc.invalidateQueries({ queryKey: ['users'] });
-      toast.success(
-        'Password reset successfully. User must change it at next login.'
-      );
+      qc.invalidateQueries({ queryKey: ['user', id] });
+      toast({
+        title: 'Password reset',
+        description: 'The user must change the password at next login.',
+      });
     },
     onError: (err: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        err.response?.data?.error?.message || 'Failed to reset password.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to reset password',
+        description: err.response?.data?.error?.message || 'Failed to reset password.',
+      });
     },
   });
 };

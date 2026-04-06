@@ -15,7 +15,6 @@ const links: NavLink[] = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
   { name: 'Services', href: '/services' },
-  { name: 'Blogs', href: '/blogs' },
   { name: 'Contact', href: '/contact' },
 ];
 
@@ -23,19 +22,22 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <motion.div
+    <motion.header
       className="fixed top-0 left-0 w-full z-50 bg-white shadow-md"
       initial={false}
       animate={false}
     >
-      <div className="flex justify-between items-center px-6 py-3 max-w-6xl mx-auto">
+      <nav
+        className="flex justify-between items-center px-6 py-3 max-w-6xl mx-auto"
+        aria-label="Primary"
+      >
         {/* Logo */}
         <div className="text-xl md:text-2xl font-bold">
           <Image
             src={'/eshi.png'}
             alt=" ESHI Consultancy Logo"
-            width={75}
-            height={75}
+            width={100}
+            height={100}
             priority
             className="rounded-xl"
           />
@@ -48,7 +50,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="hover:text-rangitoto transition-colors"
+                className="hover:text-rangitoto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-avocado rounded-sm"
               >
                 {link.name}
               </Link>
@@ -58,7 +60,7 @@ export default function Navbar() {
           {/* CTA Button */}
           <Link
             href="/#contact"
-            className="ml-6 px-6 py-2 rounded-full font-semibold bg-[var(--color-avocado)] text-[var(--color-albescent-white)] shadow-lg hover:bg-[var(--color-lemon-grass)] transition-colors"
+            className="ml-6 px-6 py-2 rounded-full font-semibold bg-[var(--color-avocado)] text-[var(--color-albescent-white)] shadow-lg hover:bg-[var(--color-lemon-grass)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-avocado"
           >
             Get in Touch
           </Link>
@@ -66,7 +68,16 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden">
-          <button onClick={() => setMenuOpen(!menuOpen)}>
+          <button
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav-menu"
+            aria-label={
+              menuOpen ? 'Close navigation menu' : 'Open navigation menu'
+            }
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-avocado rounded-sm"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
             {menuOpen ? (
               <X className="w-6 h-6 text-rangitoto" />
             ) : (
@@ -74,12 +85,13 @@ export default function Navbar() {
             )}
           </button>
         </div>
-      </div>
+      </nav>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            id="mobile-nav-menu"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -91,7 +103,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-lemon-grass text-lg font-medium hover:text-rangitoto transition-colors"
+                  className="text-lemon-grass text-lg font-medium hover:text-rangitoto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-avocado rounded-sm"
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.name}
@@ -100,7 +112,7 @@ export default function Navbar() {
               {/* Mobile CTA */}
               <Link
                 href="/#contact"
-                className="mt-4 px-6 py-2 rounded-full font-semibold bg-[var(--color-avocado)] text-[var(--color-albescent-white)] shadow-lg hover:bg-[var(--color-lemon-grass)] transition-colors"
+                className="mt-4 px-6 py-2 rounded-full font-semibold bg-[var(--color-avocado)] text-[var(--color-albescent-white)] shadow-lg hover:bg-[var(--color-lemon-grass)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-avocado"
                 onClick={() => setMenuOpen(false)}
               >
                 Get in Touch
@@ -109,6 +121,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </motion.header>
   );
 }

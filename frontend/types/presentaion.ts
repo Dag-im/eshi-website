@@ -1,5 +1,6 @@
 export interface Presentation {
-  id: string;
+  id: number;
   title: string;
   description: string;
+  imageUrl?: string | null;
 }

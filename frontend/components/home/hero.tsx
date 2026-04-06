@@ -1,8 +1,7 @@
 'use client';
 
 import { AuroraText } from '@/components/magicui/aurora-text';
-import { InteractiveHoverButton } from '@/components/magicui/interactive-hover-button';
-import { PulsatingButton } from '@/components/magicui/pulsating-button';
+import { resolveAssetUrl } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -95,11 +94,12 @@ export default function Hero({
                 }}
               >
                 <Image
-                  src={img.src}
+                  src={resolveAssetUrl(img.src)}
                   alt={img.alt}
                   fill
                   className="object-cover object-center"
                   priority={idx === 0}
+                  sizes="100vw"
                 />
               </motion.div>
             );
@@ -109,17 +109,19 @@ export default function Hero({
 
       {/* CONTENT */}
       <div className="relative z-20 flex flex-col items-center justify-center h-full text-center px-4">
-        <AuroraText
-          className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg"
-          colors={[
-            'var(--color-albescent-white)',
-            'var(--color-deco)',
-            'var(--color-indian-khaki)',
-          ]}
-          speed={1.5}
-        >
-          ESHI Consultancy
-        </AuroraText>
+        <h1>
+          <AuroraText
+            className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-lg"
+            colors={[
+              'var(--color-albescent-white)',
+              'var(--color-deco)',
+              'var(--color-indian-khaki)',
+            ]}
+            speed={1.5}
+          >
+            ESHI Consultancy
+          </AuroraText>
+        </h1>
 
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -148,19 +150,17 @@ export default function Hero({
           transition={{ delay: 0.9, duration: 0.8 }}
           className="flex flex-col sm:flex-row gap-4"
         >
-          <Link href="/services">
-            <PulsatingButton
-              pulseColor="var(--color-deco)"
-              duration="2s"
-              className="bg-avocado text-albescent-white font-semibold py-3 px-6 rounded-lg hover:bg-rangitoto transition-colors"
-            >
-              Discover Our Services
-            </PulsatingButton>
+          <Link
+            href="/services"
+            className="inline-flex items-center justify-center bg-avocado text-albescent-white font-semibold py-3 px-6 rounded-lg hover:bg-rangitoto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deco"
+          >
+            Discover Our Services
           </Link>
-          <Link href="/contact">
-            <InteractiveHoverButton className="bg-transparent border-2 border-albescent-white text-albescent-white font-semibold py-3 px-6 rounded-lg hover:bg-albescent-white hover:text-rangitoto transition-all">
-              Get in Touch
-            </InteractiveHoverButton>
+          <Link
+            href="/contact"
+            className="inline-flex items-center justify-center bg-transparent border-2 border-albescent-white text-albescent-white font-semibold py-3 px-6 rounded-lg hover:bg-albescent-white hover:text-rangitoto transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deco"
+          >
+            Get in Touch
           </Link>
         </motion.div>
       </div>

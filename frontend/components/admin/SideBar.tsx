@@ -1,120 +1,109 @@
-'use client';
-import { useLogoutMutation } from '@/lib/api/useAuth';
-import { useAuthStore } from '@/stores/auth.store';
+"use client"
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
-  Book,
-  Briefcase,
-  Heart,
-  Home,
-  LogOut,
-  Mail,
-  Menu,
+  BriefcaseBusiness,
+  ChevronLeft,
+  ChevronRight,
+  ImageIcon,
+  Inbox,
+  LayoutDashboard,
   Presentation,
+  ShieldCheck,
+  Sparkles,
   Users,
-} from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
+} from "lucide-react"
 
-export default function Sidebar() {
-  const { isSidebarOpen, toggleSidebar } = useAuthStore();
-  const pathname = usePathname();
-  const logoutMutation = useLogoutMutation();
-  const [isTooltipVisible, setIsTooltipVisible] = useState<string | null>(null);
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
-  const navItems = [
-    { href: '/admin/', label: 'Dashboard', icon: Home },
-    { href: '/admin/services', label: 'Services', icon: Briefcase },
-    { href: '/admin/team', label: 'Team', icon: Users },
-    {
-      href: '/admin/presentations',
-      label: 'Presentations',
-      icon: Presentation,
-    },
-    { href: '/admin/impacts', label: 'Impacts', icon: Heart },
-    { href: '/admin/blogs', label: 'Blogs', icon: Book },
-    { href: '/admin/contact', label: 'Contact Messages', icon: Mail },
-    { href: '/admin/users', label: 'Users', icon: Users },
-  ];
+const navigation = [
+  { href: "/admin", label: "Overview", icon: LayoutDashboard },
+  { href: "/admin/hero", label: "Hero", icon: ImageIcon },
+  { href: "/admin/users", label: "Users", icon: ShieldCheck },
+  { href: "/admin/services", label: "Services", icon: BriefcaseBusiness },
+  { href: "/admin/team", label: "Team", icon: Users },
+  { href: "/admin/presentations", label: "Presentations", icon: Presentation },
+  { href: "/admin/impacts", label: "Impacts", icon: Sparkles },
+  { href: "/admin/contact", label: "Messages", icon: Inbox },
+] as const
 
-  const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        toast.success('Logged out successfully!');
-      },
-      onError: (error) => {
-        toast.error(error.response?.data?.error?.message || 'Logout failed.');
-      },
-    });
-  };
+interface SidebarProps {
+  collapsed: boolean
+  onToggle: () => void
+  onNavigate?: () => void
+}
+
+export function AdminSidebar({ collapsed, onToggle, onNavigate }: SidebarProps) {
+  const pathname = usePathname()
 
   return (
     <aside
-      className={`fixed top-0 left-0 h-full bg-rangitoto text-white transition-all duration-300 ease-in-out shadow-lg ${
-        isSidebarOpen ? 'w-64' : 'w-16'
-      }`}
+      className={cn(
+        "flex h-screen flex-col overflow-hidden border-r border-border/70 bg-white/80 backdrop-blur-xl transition-all duration-300",
+        collapsed ? "w-20" : "w-72"
+      )}
     >
-      <div className="flex flex-col h-full">
-        {/* Toggle Button */}
-        <div className="p-4">
-          <button
-            onClick={toggleSidebar}
-            className="p-2 rounded-full hover:bg-lemon-grass transition-colors"
-            aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 px-2 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <div key={item.href} className="relative">
-              <Link
-                href={item.href}
-                className={`flex items-center p-2 rounded-lg transition-colors ${
-                  pathname === item.href
-                    ? 'bg-albescent-white text-rangitoto font-semibold'
-                    : 'hover:bg-lemon-grass'
-                }`}
-                onMouseEnter={() =>
-                  !isSidebarOpen && setIsTooltipVisible(item.label)
-                }
-                onMouseLeave={() => setIsTooltipVisible(null)}
-                aria-label={item.label}
-              >
-                <item.icon
-                  className={`h-5 w-5 ${isSidebarOpen ? 'mr-3' : ''}`}
-                />
-                {isSidebarOpen && <span>{item.label}</span>}
-              </Link>
-              {!isSidebarOpen && isTooltipVisible === item.label && (
-                <span className="absolute left-16 bg-rangitoto text-white text-sm px-2 py-1 rounded shadow-md z-10">
-                  {item.label}
-                </span>
-              )}
-            </div>
-          ))}
-        </nav>
-
-        {/* Logout Button */}
-        {isSidebarOpen && (
-          <div className="p-4 border-t border-lemon-grass/20">
-            <button
-              onClick={handleLogout}
-              className="flex items-center w-full p-2 rounded-lg hover:bg-lemon-grass transition-colors"
-              disabled={logoutMutation.isPending}
-              aria-label="Log out"
-            >
-              <LogOut className="h-5 w-5 mr-3" />
-              <span>
-                {logoutMutation.isPending ? 'Logging out...' : 'Log Out'}
-              </span>
-            </button>
+      <div className="flex h-16 items-center justify-between border-b border-border/70 px-4">
+        <div className={cn("flex items-center gap-3", collapsed && "justify-center")}>
+          <div className="flex size-10 items-center justify-center rounded-2xl bg-[var(--color-rangitoto)] text-white shadow-sm">
+            E
           </div>
-        )}
+          {!collapsed ? (
+            <div>
+              <p className="text-sm font-semibold text-foreground">ESHI Admin</p>
+              <p className="text-xs text-muted-foreground">Workspace console</p>
+            </div>
+          ) : null}
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hidden rounded-xl lg:inline-flex"
+          onClick={onToggle}
+        >
+          {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+        </Button>
+      </div>
+
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        {navigation.map((item) => {
+          const active = pathname === item.href || pathname.startsWith(`${item.href}/`)
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onNavigate}
+              className={cn(
+                "group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-all",
+                active
+                  ? "bg-[var(--color-rangitoto)] text-white shadow-sm"
+                  : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+                collapsed && "justify-center px-2"
+              )}
+            >
+              <item.icon className="size-4 shrink-0" />
+              {!collapsed ? <span>{item.label}</span> : null}
+            </Link>
+          )
+        })}
+      </nav>
+
+      <div className="border-t border-border/70 p-4">
+        <div className={cn("rounded-2xl bg-muted/60 p-4", collapsed && "p-3 text-center")}>
+          {!collapsed ? (
+            <>
+              <p className="text-sm font-medium">Designed for operators</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                Manage content, people, and incoming communication from one clean control surface.
+              </p>
+            </>
+          ) : (
+            <Sparkles className="mx-auto size-5 text-muted-foreground" />
+          )}
+        </div>
       </div>
     </aside>
-  );
+  )
 }

@@ -1,15 +1,16 @@
 // src/services/team.service.ts
+import { TeamMemberEntity } from '../entities/team-member.entity';
 import { CustomError } from '../lib/jwt';
 import { logger } from '../lib/logger';
-import { TeamMemberModel } from '../models/team.model';
+import { getRepository } from '../lib/repository';
 import * as uploadService from './upload.service';
 
 export async function getTeamMembers() {
-  return TeamMemberModel.find();
+  return getRepository(TeamMemberEntity).find({ order: { createdAt: 'DESC' } });
 }
 
 export async function getTeamMember(id: string) {
-  const member = await TeamMemberModel.findById(id);
+  const member = await getRepository(TeamMemberEntity).findOne({ where: { id: Number(id) } });
   if (!member) throw new CustomError('Team member not found.', 404);
   return member;
 }
@@ -19,15 +20,14 @@ export async function createTeamMember(
   file: Express.Multer.File,
   userId: string
 ) {
-  const upload = await uploadService.uploadImage(file);
-  const member = new TeamMemberModel({
+  const repo = getRepository(TeamMemberEntity);
+  const member = repo.create({
     ...data,
-    imageUrl: upload.url,
-    imagePublicId: upload.publicId,
+    imageUrl: uploadService.buildUploadUrl(file.filename),
   });
-  await member.save();
-  logger.info({ action: 'team_member_created', memberId: member._id, userId });
-  return member;
+  const savedMember = await repo.save(member);
+  logger.info({ action: 'team_member_created', memberId: savedMember.id, userId });
+  return savedMember;
 }
 
 export async function updateTeamMember(
@@ -36,24 +36,24 @@ export async function updateTeamMember(
   userId: string,
   file?: Express.Multer.File
 ) {
-  const member = await TeamMemberModel.findById(id);
+  const repo = getRepository(TeamMemberEntity);
+  const member = await repo.findOne({ where: { id: Number(id) } });
   if (!member) throw new CustomError('Team member not found.', 404);
   if (file) {
-    if (member.imagePublicId) await uploadService.deleteImage(member.imagePublicId);
-    const upload = await uploadService.uploadImage(file);
-    member.imageUrl = upload.url;
-    member.imagePublicId = upload.publicId;
+    await uploadService.deleteImage(member.imageUrl);
+    member.imageUrl = uploadService.buildUploadUrl(file.filename);
   }
   Object.assign(member, data);
-  await member.save();
+  const savedMember = await repo.save(member);
   logger.info({ action: 'team_member_updated', memberId: id, userId });
-  return member;
+  return savedMember;
 }
 
 export async function deleteTeamMember(id: string, userId: string) {
-  const member = await TeamMemberModel.findById(id);
+  const repo = getRepository(TeamMemberEntity);
+  const member = await repo.findOne({ where: { id: Number(id) } });
   if (!member) throw new CustomError('Team member not found.', 404);
-  if (member.imagePublicId) await uploadService.deleteImage(member.imagePublicId);
-  await member.deleteOne();
+  await uploadService.deleteImage(member.imageUrl);
+  await repo.remove(member);
   logger.info({ action: 'team_member_deleted', memberId: id, userId });
 }

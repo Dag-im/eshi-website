@@ -3,16 +3,11 @@
 import { BorderBeam } from '@/components/magicui/border-beam';
 import { Marquee } from '@/components/magicui/marquee';
 import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { usePresentations } from '@/lib/api/usePresentations';
+import { resolveAssetUrl } from '@/lib/utils';
+import { Presentation } from '@/types/presentaion';
 import { motion } from 'framer-motion';
-import { memo, useEffect } from 'react';
-
-type Presentation = {
-  _id: number;
-  title: string;
-  description: string;
-};
+import Image from 'next/image';
+import { memo } from 'react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,47 +20,63 @@ const childVariants = {
 } as const;
 
 const PresentationCard = memo(
-  ({ presentation }: { presentation: Presentation }) => (
-    <Card
-      className="relative bg-[var(--color-avocado)]/90 backdrop-blur-xl border border-[var(--color-lemon-grass)]/40 rounded-3xl p-6 w-[300px] md:w-[350px] hover:shadow-2xl hover:scale-105 transition-all duration-300"
-      aria-label={`Presentation: ${presentation.title}`}
-    >
-      <BorderBeam
-        size={150}
-        duration={6}
-        colorFrom="var(--color-indian-khaki)"
-        colorTo="var(--color-lemon-grass)"
-      />
-      <CardContent>
-        <h3 className="text-lg md:text-xl font-bold text-rangitoto mb-3 line-clamp-2">
-          {presentation.title}
-        </h3>
-        <p className="text-sm md:text-base text-[var(--color-albescent-white)] leading-relaxed line-clamp-3">
-          {presentation.description}
-        </p>
-      </CardContent>
-    </Card>
-  )
+  ({ presentation }: { presentation: Presentation }) => {
+    const imageSrc = presentation.imageUrl ? resolveAssetUrl(presentation.imageUrl) : '';
+
+    return (
+      <Card
+        className="relative w-[300px] md:w-[350px] min-h-[340px] overflow-hidden border border-[var(--color-lemon-grass)]/40 rounded-3xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300"
+        aria-label={`Presentation: ${presentation.title}`}
+      >
+        <div className="absolute inset-0 bg-[linear-gradient(160deg,rgba(101,129,45,0.95)_0%,rgba(45,66,28,0.96)_100%)]" />
+        {imageSrc ? (
+          <div className="absolute inset-0">
+            <Image
+              src={imageSrc}
+              alt={presentation.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 300px, 350px"
+            />
+          </div>
+        ) : null}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/45 to-[rgba(24,38,18,0.92)]" />
+        <BorderBeam
+          size={150}
+          duration={6}
+          colorFrom="var(--color-indian-khaki)"
+          colorTo="var(--color-lemon-grass)"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(216,230,91,0.22),transparent_38%)]" />
+        <CardContent className="relative z-10 flex min-h-[340px] flex-col justify-end p-6">
+          <div className="mb-4 inline-flex w-fit items-center rounded-full border border-white/25 bg-black/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--color-indian-khaki)] backdrop-blur-sm">
+            Presentation
+          </div>
+          <h3 className="text-lg md:text-xl font-bold text-white mb-3 line-clamp-2">
+            {presentation.title}
+          </h3>
+          <p className="text-sm md:text-base text-white/90 leading-relaxed line-clamp-4">
+            {presentation.description}
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 );
 
 PresentationCard.displayName = 'PresentationCard';
 
-export default function PresentationsSection() {
-  const { data: presentations, isLoading, error } = usePresentations();
+interface PresentationsSectionProps {
+  presentations: Presentation[];
+}
 
-  // Debug API response
-  useEffect(() => {
-    console.log('Presentations data:', presentations);
-  }, [presentations]);
-
-  // Map API response to match Presentation type
-  const mappedPresentations: Presentation[] = (presentations || []).map(
-    (item: Presentation) => ({
-      id: item._id,
-      title: item.title,
-      description: item.description || '',
-    })
-  );
+export default function PresentationsSection({ presentations }: PresentationsSectionProps) {
+  const mappedPresentations: Presentation[] = presentations.map((item) => ({
+    id: item.id,
+    title: item.title,
+    description: item.description || '',
+    imageUrl: item.imageUrl || null,
+  }));
 
   return (
     <motion.section
@@ -73,6 +84,7 @@ export default function PresentationsSection() {
       initial="hidden"
       animate="visible"
       className="mb-20"
+      id="presentations"
     >
       <motion.h2
         variants={childVariants}
@@ -81,34 +93,14 @@ export default function PresentationsSection() {
         Presentations & Workshops
       </motion.h2>
       <div className="relative overflow-hidden">
-        {isLoading ? (
-          <div className="flex gap-6">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div
-                key={index}
-                className="w-[300px] md:w-[350px] space-y-4 p-6 bg-[var(--color-avocado)]/90 backdrop-blur-xl border border-[var(--color-lemon-grass)]/40 rounded-3xl"
-              >
-                <Skeleton className="h-6 w-3/4 rounded bg-[var(--color-rangitoto)]/10" />
-                <Skeleton className="h-4 w-5/6 rounded bg-[var(--color-rangitoto)]/10" />
-                <Skeleton className="h-4 w-4/5 rounded bg-[var(--color-rangitoto)]/10" />
-              </div>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="text-center text-red-500">
-            Failed to load presentations. Please try again later.
-          </div>
-        ) : !mappedPresentations || mappedPresentations.length === 0 ? (
+        {mappedPresentations.length === 0 ? (
           <div className="text-center text-[var(--color-rangitoto)]/70">
             No presentations available at the moment.
           </div>
         ) : (
           <Marquee pauseOnHover className="gap-6 [--duration:60s]" repeat={2}>
             {mappedPresentations.map((presentation) => (
-              <PresentationCard
-                key={presentation._id}
-                presentation={presentation}
-              />
+              <PresentationCard key={presentation.id} presentation={presentation} />
             ))}
           </Marquee>
         )}

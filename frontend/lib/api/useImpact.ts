@@ -1,10 +1,10 @@
 // impacts.ts
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
 
 import { AxiosError } from 'axios';
+import { toast } from '../../hooks/use-toast';
 
 interface ApiErrorResponse {
   error?: {
@@ -45,12 +45,14 @@ export const useCreateImpact = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['impacts'] });
-      toast.success('Impact created successfully!');
+      toast({ title: 'Impact created successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to create impact.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to create impact',
+        description: error.response?.data?.error?.message || 'Failed to create impact.',
+      });
     },
   });
 };
@@ -67,12 +69,14 @@ export const useUpdateImpact = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['impacts'] });
-      toast.success('Impact updated successfully!');
+      toast({ title: 'Impact updated successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to update impact.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to update impact',
+        description: error.response?.data?.error?.message || 'Failed to update impact.',
+      });
     },
   });
 };
@@ -85,12 +89,14 @@ export const useDeleteImpact = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['impacts'] });
-      toast.success('Impact deleted successfully!');
+      toast({ title: 'Impact deleted successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to delete impact.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to delete impact',
+        description: error.response?.data?.error?.message || 'Failed to delete impact.',
+      });
     },
   });
 };

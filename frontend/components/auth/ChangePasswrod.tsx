@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuthQuery, useResetPasswordMutation } from '@/lib/api/useAuth';
+import { toast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'react-hot-toast';
 
 export default function ChangePassword() {
   const { data: user, isLoading, error } = useAuthQuery();
@@ -21,26 +21,21 @@ export default function ChangePassword() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id) {
-      toast.error('User not found. Please log in again.');
+      toast({
+        variant: 'destructive',
+        title: 'User not found',
+        description: 'Please log in again.',
+      });
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match.');
+      toast({
+        variant: 'destructive',
+        title: 'Passwords do not match',
+      });
       return;
     }
-    resetPasswordMutation.mutate(
-      { userId: user.id, newPassword },
-      {
-        onError: (err) => {
-          toast.error(
-            err.response?.data?.error?.message || 'Failed to change password.'
-          );
-        },
-        onSuccess: () => {
-          toast.success('Password changed successfully! Please log in again.');
-        },
-      }
-    );
+    resetPasswordMutation.mutate({ userId: user.id, newPassword });
   };
 
   if (isLoading) {
@@ -59,7 +54,7 @@ export default function ChangePassword() {
             Error loading user data. Please log in again.
           </p>
           <Button asChild variant="outline">
-            <a href="/login">Go to Login</a>
+            <a href="/admin/login">Go to Login</a>
           </Button>
         </CardContent>
       </Card>

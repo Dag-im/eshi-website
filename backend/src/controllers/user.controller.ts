@@ -17,7 +17,15 @@ export async function createUser(req: Request, res: Response) {
   const data = req.body;
   const adminId = (req as any).user.id;
   const user = await userService.createUser(data, adminId);
-  res.status(201).json(user);
+  res.status(201).json({
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    isActive: user.isActive,
+    mustChangePassword: user.mustChangePassword,
+    temporaryPassword: user.temporaryPassword,
+  });
 }
 
 export async function updateUser(req: Request, res: Response) {

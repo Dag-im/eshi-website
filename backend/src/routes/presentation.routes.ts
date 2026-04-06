@@ -1,41 +1,44 @@
 // src/routes/presentation.routes.ts
 import express from 'express';
 import * as presentationCtrl from '../controllers/presentation.controller';
+import { CreatePresentationDto } from '../dto/presentation/create-presentation.dto';
+import { UpdatePresentationDto } from '../dto/presentation/update-presentation.dto';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { authGuard } from '../middleware/auth.guard';
 import { errorHandler } from '../middleware/errorHandler';
-import { validationMiddleware } from '../middleware/validationMiddleware';
-
-const expressValidator: any = require('express-validator');
-const { body } = expressValidator;
+import { singleUpload } from '../middleware/multerMiddleware';
+import { validateDto } from '../middleware/validateDto';
+import { IdParamDto } from '../dto/common/id-param.dto';
 
 const router = express.Router();
 
 router.get('/', asyncHandler(presentationCtrl.getPresentations));
 
-router.get('/:id', asyncHandler(presentationCtrl.getPresentation));
+router.get('/:id', validateDto(IdParamDto, 'params'), asyncHandler(presentationCtrl.getPresentation));
 
 router.post(
   '/',
   authGuard,
-  validationMiddleware([
-    body('title').isString().withMessage('Title is required.'),
-    body('description').isString().withMessage('Description is required.'),
-  ]),
+  singleUpload,
+  validateDto(CreatePresentationDto),
   asyncHandler(presentationCtrl.createPresentation)
 );
 
 router.put(
   '/:id',
   authGuard,
-  validationMiddleware([
-    body('title').optional().isString(),
-    body('description').optional().isString(),
-  ]),
+  singleUpload,
+  validateDto(IdParamDto, 'params'),
+  validateDto(UpdatePresentationDto),
   asyncHandler(presentationCtrl.updatePresentation)
 );
 
-router.delete('/:id', authGuard, asyncHandler(presentationCtrl.deletePresentation));
+router.delete(
+  '/:id',
+  authGuard,
+  validateDto(IdParamDto, 'params'),
+  asyncHandler(presentationCtrl.deletePresentation)
+);
 
 router.use(errorHandler);
 

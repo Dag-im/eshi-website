@@ -1,16 +1,19 @@
 import { cn } from '@/lib/utils';
+import { Slot } from '@radix-ui/react-slot';
 import { ArrowRight } from 'lucide-react';
 import React from 'react';
 
 type InteractiveHoverButtonProps =
-  React.ButtonHTMLAttributes<HTMLButtonElement>;
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean };
 
 export const InteractiveHoverButton = React.forwardRef<
   HTMLButtonElement,
   InteractiveHoverButtonProps
->(({ children, className, ...props }, ref) => {
+>(({ children, className, asChild = false, ...props }, ref) => {
+  const Comp = asChild ? Slot : 'button';
+
   return (
-    <button
+    <Comp
       ref={ref}
       className={cn(
         'group relative w-auto cursor-pointer overflow-hidden rounded-full border bg-background p-2 px-6 text-center font-semibold',
@@ -28,7 +31,7 @@ export const InteractiveHoverButton = React.forwardRef<
         <span>{children}</span>
         <ArrowRight />
       </div>
-    </button>
+    </Comp>
   );
 });
 

@@ -4,7 +4,6 @@ import { AuroraText } from '@/components/magicui/aurora-text';
 import { BorderBeam } from '@/components/magicui/border-beam';
 
 import { Particles } from '@/components/magicui/particles';
-import { PulsatingButton } from '@/components/magicui/pulsating-button';
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -97,12 +96,12 @@ export default function CTA({
               whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
               whileTap={{ scale: 0.95 }}
             >
-              <PulsatingButton
-                pulseColor="var(--color-avocado)"
-                className="relative px-8 py-4 rounded-full bg-[var(--color-deco)] text-[var(--color-rangitoto)] text-lg font-medium shadow-lg hover:bg-[var(--color-deco)] transition-all duration-300 hover:shadow-xl"
+              <Link
+                href={contactUrl}
+                className="inline-flex relative px-8 py-4 rounded-full bg-[var(--color-deco)] text-[var(--color-rangitoto)] text-lg font-medium shadow-lg hover:bg-[var(--color-deco)] transition-all duration-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deco"
               >
-                <Link href={contactUrl}>{buttonText}</Link>
-              </PulsatingButton>
+                {buttonText}
+              </Link>
             </motion.div>
           </div>
         </Card>

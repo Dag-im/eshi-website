@@ -1,6 +1,7 @@
 // src/routes/auth.route.ts
 import express from 'express';
 import rateLimit from 'express-rate-limit';
+import { ResetPasswordDto } from '../dto/auth/reset-password.dto';
 
 // Use require + any cast for packages that are causing ES/CommonJS typing trouble
 const expressValidator: any = require('express-validator');
@@ -10,6 +11,7 @@ import * as authCtrl from '../controllers/auth.controller';
 import { authenticate } from '../lib/jwt';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { errorHandler } from '../middleware/errorHandler';
+import { validateDto } from '../middleware/validateDto';
 import { validationMiddleware } from '../middleware/validationMiddleware';
 
 const { body } = expressValidator;
@@ -48,12 +50,7 @@ router.post('/logout', asyncHandler(authCtrl.logout));
 router.post(
   '/reset-password',
   resetLimiter,
-  validationMiddleware([
-    body('userId').isString().withMessage('User ID is required.'),
-    body('newPassword')
-      .isLength({ min: 8 })
-      .withMessage('New password must be at least 8 characters long.'),
-  ]),
+  validateDto(ResetPasswordDto),
   asyncHandler(authCtrl.resetPassword)
 );
 

@@ -6,7 +6,6 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { config } from './lib/config';
 import { logger } from './lib/logger';
-import { mongoSanitizeMiddleware } from './middleware/mongoSanitize';
 import { xssCleanMiddleware } from './middleware/xssClean'; // custom XSS middleware
 
 // after body parsers
@@ -18,11 +17,13 @@ const app = express();
 // --------------------
 app.use(
   helmet({
+    // MIGRATION: allow cross-origin image consumption for uploaded media previews.
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", 'data:', 'res.cloudinary.com'],
+        imgSrc: ["'self'", 'data:'],
       },
     },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
@@ -66,7 +67,6 @@ app.use('/api', globalLimiter);
 // --------------------
 // Sanitization
 // --------------------
-app.use(mongoSanitizeMiddleware); // NoSQL injection protection
 app.use(xssCleanMiddleware); // XSS protection
 
 // --------------------

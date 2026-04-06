@@ -2,8 +2,8 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
+import { toast } from '../../hooks/use-toast';
 
 interface ApiErrorResponse {
   error?: {
@@ -13,7 +13,7 @@ interface ApiErrorResponse {
 
 export const useTeam = () => {
   return useQuery({
-    queryKey: ['team'],
+    queryKey: ['team-members'],
     queryFn: async () => {
       const res = await publicApi.get('/team');
       return res.data;
@@ -33,13 +33,7 @@ export const useTeamMember = (id: string) => {
 };
 
 export const useTeamMembers = () => {
-  return useQuery({
-    queryKey: ['team-members'],
-    queryFn: async () => {
-      const res = await publicApi.get('/team');
-      return res.data;
-    },
-  });
+  return useTeam();
 };
 
 export const useCreateTeamMember = () => {
@@ -53,13 +47,15 @@ export const useCreateTeamMember = () => {
       return res.data;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['team'] });
-      toast.success('Team member created successfully!');
+      qc.invalidateQueries({ queryKey: ['team-members'] });
+      toast({ title: 'Team member created successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to create team member.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to create team member',
+        description: error.response?.data?.error?.message || 'Failed to create team member.',
+      });
     },
   });
 };
@@ -75,13 +71,15 @@ export const useUpdateTeamMember = () => {
       return res.data;
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['team'] });
-      toast.success('Team member updated successfully!');
+      qc.invalidateQueries({ queryKey: ['team-members'] });
+      toast({ title: 'Team member updated successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to update team member.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to update team member',
+        description: error.response?.data?.error?.message || 'Failed to update team member.',
+      });
     },
   });
 };
@@ -93,13 +91,15 @@ export const useDeleteTeamMember = () => {
       await privateApi.delete(`/team/${id}`);
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['team'] });
-      toast.success('Team member deleted successfully!');
+      qc.invalidateQueries({ queryKey: ['team-members'] });
+      toast({ title: 'Team member deleted successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to delete team member.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to delete team member',
+        description: error.response?.data?.error?.message || 'Failed to delete team member.',
+      });
     },
   });
 };

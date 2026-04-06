@@ -1,7 +1,7 @@
 export interface Impact {
-  id: string;
+  id: number;
   name: string;
-  logoUrl?: string;
+  logo?: string;
   desc: string;
   stat: string;
 }

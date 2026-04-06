@@ -1,15 +1,16 @@
 // src/services/impact.service.ts
+import { ImpactEntity } from '../entities/impact.entity';
 import { CustomError } from '../lib/jwt';
 import { logger } from '../lib/logger';
-import { ImpactModel } from '../models/impact.model';
+import { getRepository } from '../lib/repository';
 import * as uploadService from './upload.service';
 
 export async function getImpacts() {
-  return ImpactModel.find();
+  return getRepository(ImpactEntity).find({ order: { createdAt: 'DESC' } });
 }
 
 export async function getImpact(id: string) {
-  const impact = await ImpactModel.findById(id);
+  const impact = await getRepository(ImpactEntity).findOne({ where: { id: Number(id) } });
   if (!impact) throw new CustomError('Impact not found.', 404);
   return impact;
 }
@@ -19,11 +20,14 @@ export async function createImpact(
   file: Express.Multer.File,
   userId: string
 ) {
-  const upload = await uploadService.uploadImage(file);
-  const impact = new ImpactModel({ ...data, logo: upload.url, logoPublicId: upload.publicId });
-  await impact.save();
-  logger.info({ action: 'impact_created', impactId: impact._id, userId });
-  return impact;
+  const repo = getRepository(ImpactEntity);
+  const impact = repo.create({
+    ...data,
+    logo: uploadService.buildUploadUrl(file.filename),
+  });
+  const savedImpact = await repo.save(impact);
+  logger.info({ action: 'impact_created', impactId: savedImpact.id, userId });
+  return savedImpact;
 }
 
 export async function updateImpact(
@@ -32,24 +36,24 @@ export async function updateImpact(
   userId: string,
   file?: Express.Multer.File
 ) {
-  const impact = await ImpactModel.findById(id);
+  const repo = getRepository(ImpactEntity);
+  const impact = await repo.findOne({ where: { id: Number(id) } });
   if (!impact) throw new CustomError('Impact not found.', 404);
   if (file) {
-    if (impact.logoPublicId) await uploadService.deleteImage(impact.logoPublicId);
-    const upload = await uploadService.uploadImage(file);
-    impact.logo = upload.url;
-    impact.logoPublicId = upload.publicId;
+    await uploadService.deleteImage(impact.logo);
+    impact.logo = uploadService.buildUploadUrl(file.filename);
   }
   Object.assign(impact, data);
-  await impact.save();
+  const savedImpact = await repo.save(impact);
   logger.info({ action: 'impact_updated', impactId: id, userId });
-  return impact;
+  return savedImpact;
 }
 
 export async function deleteImpact(id: string, userId: string) {
-  const impact = await ImpactModel.findById(id);
+  const repo = getRepository(ImpactEntity);
+  const impact = await repo.findOne({ where: { id: Number(id) } });
   if (!impact) throw new CustomError('Impact not found.', 404);
-  if (impact.logoPublicId) await uploadService.deleteImage(impact.logoPublicId);
-  await impact.deleteOne();
+  await uploadService.deleteImage(impact.logo);
+  await repo.remove(impact);
   logger.info({ action: 'impact_deleted', impactId: id, userId });
 }

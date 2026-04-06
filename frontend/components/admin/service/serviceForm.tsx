@@ -195,7 +195,7 @@ const iconMap = {
 
 interface ServiceFormProps {
   item?: {
-    id: string;
+    id: number;
     title: string;
     description: string;
     icon?: string;
@@ -224,7 +224,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
   const onSubmit: SubmitHandler<ServiceFormValues> = async (values) => {
     try {
       if (isEdit && item?.id) {
-        await updateMutation.mutateAsync({ id: item.id, data: values });
+        await updateMutation.mutateAsync({ id: String(item.id), data: values });
       } else {
         await createMutation.mutateAsync(values);
       }
@@ -298,7 +298,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
         />
         <Button
           type="submit"
-          className="w-full"
+          className="w-full bg-[var(--color-avocado)] hover:bg-[var(--color-rangitoto)] text-white"
           disabled={createMutation.isPending || updateMutation.isPending}
         >
           {(createMutation.isPending || updateMutation.isPending) && (

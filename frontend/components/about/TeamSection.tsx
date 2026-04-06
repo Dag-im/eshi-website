@@ -9,19 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useTeamMembers } from '@/lib/api/useTeam';
+import { resolveAssetUrl } from '@/lib/utils';
+import { TeamMember } from '@/types/team';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { memo, useEffect } from 'react';
-
-type TeamMember = {
-  _id: number;
-  name: string;
-  title: string;
-  bio: string;
-  imageUrl: string;
-};
+import { memo } from 'react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -44,12 +36,13 @@ const TeamMemberCard = memo(({ member }: { member: TeamMember }) => (
       />
       <div className="relative w-full h-56 md:h-64 overflow-hidden rounded-t-3xl">
         <Image
-          src={member.imageUrl}
+          src={resolveAssetUrl(member.imageUrl)}
           alt={member.name}
           width={800}
           height={400}
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-deco)]/50 to-transparent" />
       </div>
@@ -99,24 +92,15 @@ const TeamMemberCard = memo(({ member }: { member: TeamMember }) => (
 
 TeamMemberCard.displayName = 'TeamMemberCard';
 
-export default function TeamSection() {
-  const { data: teamMembers, isLoading, error } = useTeamMembers();
+interface TeamSectionProps {
+  teamMembers: TeamMember[];
+}
 
-  // Debug API response
-  useEffect(() => {
-    console.log('Team Members data:', teamMembers);
-  }, [teamMembers]);
-
-  // Map API response to match TeamMember type (handle image vs. imageUrl)
-  const mappedTeamMembers: TeamMember[] = (teamMembers || []).map(
-    (item: TeamMember) => ({
-      id: item._id,
-      name: item.name,
-      title: item.title,
-      bio: item.bio,
-      imageUrl: item.imageUrl || '/default-image.png', // Fallback image
-    })
-  );
+export default function TeamSection({ teamMembers }: TeamSectionProps) {
+  const mappedTeamMembers: TeamMember[] = teamMembers.map((item) => ({
+    ...item,
+    imageUrl: item.imageUrl || '/default-image.png',
+  }));
 
   return (
     <motion.section
@@ -124,6 +108,7 @@ export default function TeamSection() {
       initial="hidden"
       animate="visible"
       className="mb-20"
+      id="team"
     >
       <motion.h2
         variants={childVariants}
@@ -132,26 +117,13 @@ export default function TeamSection() {
         Our Team
       </motion.h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {isLoading ? (
-          Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="space-y-4">
-              <Skeleton className="w-full h-56 md:h-64 rounded-t-3xl bg-[var(--color-rangitoto)]/10" />
-              <Skeleton className="h-6 w-3/4 mx-auto rounded bg-[var(--color-rangitoto)]/10" />
-              <Skeleton className="h-4 w-1/2 mx-auto rounded bg-[var(--color-rangitoto)]/10" />
-              <Skeleton className="h-4 w-5/6 mx-auto rounded bg-[var(--color-rangitoto)]/10" />
-            </div>
-          ))
-        ) : error ? (
-          <div className="text-center text-red-500 col-span-full">
-            Failed to load team members. Please try again later.
-          </div>
-        ) : !mappedTeamMembers || mappedTeamMembers.length === 0 ? (
+        {mappedTeamMembers.length === 0 ? (
           <div className="text-center text-[var(--color-rangitoto)]/70 col-span-full">
             No team members available at the moment.
           </div>
         ) : (
           mappedTeamMembers.map((member) => (
-            <TeamMemberCard key={member._id} member={member} />
+            <TeamMemberCard key={member.id} member={member} />
           ))
         )}
       </div>

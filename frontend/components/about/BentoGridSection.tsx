@@ -97,7 +97,7 @@ export default function BentoGridSection() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1">
-                  <p className="text-sm md:text-base text-[var(--color-albescent-white)]/90 text-center">
+                  <p className="text-sm md:text-base text-[var(--color-albescent-white)] text-center">
                     {item.description}
                   </p>
                 </CardContent>

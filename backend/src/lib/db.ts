@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
-import { config } from './config';
+import { initializeDataSource } from '../config/data-source';
 import { logger } from './logger';
 
 export async function connectDb() {
-  const uri = config.MONGODB_URI;
-  if (!uri) throw new Error('MONGODB_URI not set');
-  await mongoose.connect(uri);
-  logger.info('MongoDB connected');
+  const dataSource = await initializeDataSource();
+  if (!dataSource) {
+    throw new Error('TypeORM configuration missing. DB_HOST/DB_USERNAME/DB_PASSWORD/DB_NAME are required.');
+  }
+
+  logger.info('MySQL connected through TypeORM');
 }

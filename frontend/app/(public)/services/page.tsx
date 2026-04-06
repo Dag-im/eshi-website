@@ -1,5 +1,3 @@
-'use client';
-
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { BorderBeam } from '@/components/magicui/border-beam';
 
@@ -8,9 +6,36 @@ import CallToAction from '@/components/services/CallToAction';
 import ImpactSection from '@/components/services/ImpactSection';
 import WhyChooseESHI from '@/components/services/WhyChooseEshi';
 import { Card, CardContent } from '@/components/ui/card';
-import { motion } from 'framer-motion';
+import { getImpactsData } from '@/lib/api/public/content';
+import { Metadata } from 'next';
 
-export default function ServicesPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Services | ESHI Consultancy',
+    description:
+      'Explore ESHI Consultancy services: organizational strengthening, capacity building, and long-term support for grassroots organizations.',
+    alternates: {
+      canonical: '/services',
+    },
+    openGraph: {
+      title: 'Services | ESHI Consultancy',
+      description:
+        'Organizational strengthening and capacity building services for grassroots organizations.',
+      url: '/services',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Services | ESHI Consultancy',
+      description:
+        'Organizational strengthening and capacity building services for grassroots organizations.',
+    },
+  };
+}
+
+export default async function ServicesPage() {
+  const impacts = await getImpactsData();
+
   return (
     <div className="min-h-screen bg-green-50/50 text-rangitoto">
       {/* Hero Section */}
@@ -23,12 +48,7 @@ export default function ServicesPage() {
           refresh
         />
 
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="relative z-10 text-5xl md:text-6xl font-extrabold mb-6 pt-12"
-        >
+        <h1 className="relative z-10 text-5xl md:text-6xl font-extrabold mb-6 pt-12">
           <AuroraText
             className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[var(--color-rangitoto)]"
             colors={[
@@ -40,18 +60,13 @@ export default function ServicesPage() {
           >
             Our Services
           </AuroraText>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="relative z-10 max-w-2xl text-lg text-lemon-grass"
-        >
+        </h1>
+        <p className="relative z-10 max-w-2xl text-lg text-lemon-grass">
           At ESHI, we focus on strengthening grassroots organizations by
           building their{' '}
           <span className="font-semibold">internal capacity</span>—not
           dependency on external consultants.
-        </motion.p>
+        </p>
       </section>
 
       {/* Service Categories */}
@@ -78,14 +93,8 @@ export default function ServicesPage() {
               'Emphasis on building internal skills',
             ],
           },
-        ].map((service, i) => (
-          <motion.div
-            key={service.title}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.2 }}
-            className="relative"
-          >
+        ].map((service) => (
+          <div key={service.title} className="relative">
             <Card className="relative z-10 rounded-2xl shadow-xl bg-deco/40 hover:bg-deco/60 transition">
               <BorderBeam
                 size={150}
@@ -103,7 +112,7 @@ export default function ServicesPage() {
                 </ul>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         ))}
       </section>
 
@@ -163,7 +172,7 @@ export default function ServicesPage() {
 
       {/* Impact */}
       <section>
-        <ImpactSection />
+        <ImpactSection impacts={impacts ?? []} />
       </section>
 
       {/* Why ESHI */}

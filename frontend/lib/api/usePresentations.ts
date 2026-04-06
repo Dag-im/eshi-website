@@ -2,8 +2,8 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
+import { toast } from '../../hooks/use-toast';
 
 interface ApiErrorResponse {
   error?: {
@@ -35,18 +35,22 @@ export const usePresentation = (id: string) => {
 export const useCreatePresentation = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { title: string; description: string }) => {
-      const res = await privateApi.post('/presentation', data);
+    mutationFn: async (data: FormData) => {
+      const res = await privateApi.post('/presentation', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       return res.data;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['presentations'] });
-      toast.success('Presentation created successfully!');
+      toast({ title: 'Presentation created successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to create presentation.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to create presentation',
+        description: error.response?.data?.error?.message || 'Failed to create presentation.',
+      });
     },
   });
 };
@@ -59,19 +63,23 @@ export const useUpdatePresentation = () => {
       data,
     }: {
       id: string;
-      data: Partial<{ title: string; description: string }>;
+      data: FormData;
     }) => {
-      const res = await privateApi.put(`/presentation/${id}`, data);
+      const res = await privateApi.put(`/presentation/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       return res.data;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['presentations'] });
-      toast.success('Presentation updated successfully!');
+      toast({ title: 'Presentation updated successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to update presentation.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to update presentation',
+        description: error.response?.data?.error?.message || 'Failed to update presentation.',
+      });
     },
   });
 };
@@ -84,12 +92,14 @@ export const useDeletePresentation = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['presentations'] });
-      toast.success('Presentation deleted successfully!');
+      toast({ title: 'Presentation deleted successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to delete presentation.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to delete presentation',
+        description: error.response?.data?.error?.message || 'Failed to delete presentation.',
+      });
     },
   });
 };

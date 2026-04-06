@@ -1,34 +1,55 @@
-'use client';
-import AdminLayout from '@/components/admin/AdminLayout';
 import ClientQueryProvider from '@/components/ClientQueryProvider';
-import Footer from '@/components/shared/Footer';
-import Navbar from '@/components/shared/NavBar';
-import { usePathname } from 'next/navigation';
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from '@/components/ui/toaster';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { Metadata } from 'next';
 import './globals.css';
+
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+});
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://eshi.org'),
+  title: {
+    default: 'ESHI Consultancy',
+    template: '%s | ESHI Consultancy',
+  },
+  description:
+    'ESHI Consultancy supports grassroots NGOs, CBOs, and CSOs through practical capacity building and sustainable organizational development.',
+  openGraph: {
+    title: 'ESHI Consultancy',
+    description:
+      'Capacity building and organizational development for grassroots organizations.',
+    type: 'website',
+    siteName: 'ESHI Consultancy',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ESHI Consultancy',
+    description:
+      'Capacity building and organizational development for grassroots organizations.',
+  },
+};
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const isAdminRoute = pathname.startsWith('/admin');
-
   return (
     <html lang="en">
-      <body className="scroll-smooth bg-green-50/50">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} scroll-smooth bg-background text-foreground antialiased`}
+      >
         <ClientQueryProvider>
-          {isAdminRoute ? (
-            <AdminLayout>{children}</AdminLayout>
-          ) : (
-            <>
-              <Navbar />
-              {children}
-              <Footer />
-            </>
-          )}
-          <Toaster position="top-right" />
+          {children}
+          <Toaster />
         </ClientQueryProvider>
       </body>
     </html>

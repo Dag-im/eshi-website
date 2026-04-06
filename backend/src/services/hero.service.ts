@@ -1,43 +1,44 @@
 // src/services/hero.service.ts
+import { HeroEntity, HeroImage } from '../entities/hero.entity';
 import { logger } from '../lib/logger';
-import { HeroModel } from '../models/hero.model';
+import { getRepository } from '../lib/repository';
 import * as uploadService from './upload.service';
 
 export async function getHero() {
-  let hero = await HeroModel.findOne();
+  const repo = getRepository(HeroEntity);
+  let hero = await repo.findOne({ where: {} });
   if (!hero) {
-    hero = new HeroModel({ bgImages: [] });
-    await hero.save();
+    hero = repo.create({ bgImages: [] });
+    hero = await repo.save(hero);
   }
   return hero;
 }
 
 export async function updateHero(
-  bgImages: { src?: string; alt: string; file?: Express.Multer.File; publicId?: string }[],
+  bgImages: { src?: string; alt: string; file?: Express.Multer.File }[],
   userId: string
 ) {
+  // MIGRATION: replaced mongoose with TypeORM here.
+  const repo = getRepository(HeroEntity);
   const hero = await getHero();
 
-  const newBgImages = [];
+  const newBgImages: HeroImage[] = [];
   for (const img of bgImages) {
     let src = img.src;
-    let publicId = img.publicId;
     if (img.file) {
-      const upload = await uploadService.uploadImage(img.file);
-      src = upload.url;
-      publicId = upload.publicId;
+      src = uploadService.buildUploadUrl(img.file.filename);
     }
-    if (src) newBgImages.push({ src, alt: img.alt, publicId });
+    if (src) newBgImages.push({ src, alt: img.alt });
   }
 
   for (const oldImg of hero.bgImages) {
-    if (!newBgImages.some((newImg) => newImg.publicId === oldImg.publicId) && oldImg.publicId) {
-      await uploadService.deleteImage(oldImg.publicId);
+    if (!newBgImages.some((newImg) => newImg.src === oldImg.src)) {
+      await uploadService.deleteImage(oldImg.src);
     }
   }
 
   hero.bgImages = newBgImages;
-  await hero.save();
+  const savedHero = await repo.save(hero);
   logger.info({ action: 'hero_updated', userId });
-  return hero;
+  return savedHero;
 }

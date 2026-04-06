@@ -1,13 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { User } from '../types/auth';
 
 interface AuthState {
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    role: 'admin' | null;
-  } | null;
+  user: User | null;
   isSidebarOpen: boolean;
   darkMode: boolean;
   setUser: (user: AuthState['user']) => void;

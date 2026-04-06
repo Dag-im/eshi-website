@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { useCreateTeamMember, useUpdateTeamMember } from '@/lib/api/useTeam';
+import { resolveAssetUrl } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Upload, X } from 'lucide-react';
 import Image from 'next/image';
@@ -31,7 +32,7 @@ type TeamFormValues = z.infer<typeof teamSchema>;
 
 interface TeamFormProps {
   item?: {
-    id: string;
+    id: number;
     name: string;
     title: string;
     bio: string;
@@ -42,7 +43,7 @@ interface TeamFormProps {
 
 export const TeamForm: React.FC<TeamFormProps> = ({ item, onSuccess }) => {
   const isEdit = !!item;
-  const [filePreview, setFilePreview] = React.useState(item?.imageUrl || '');
+  const [filePreview, setFilePreview] = React.useState(resolveAssetUrl(item?.imageUrl || ''));
   const [progress, setProgress] = React.useState(0);
 
   const createMutation = useCreateTeamMember();
@@ -67,7 +68,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({ item, onSuccess }) => {
 
     try {
       if (isEdit && item?.id) {
-        await updateMutation.mutateAsync({ id: item.id, data: formData });
+        await updateMutation.mutateAsync({ id: String(item.id), data: formData });
       } else {
         await createMutation.mutateAsync(formData);
       }
@@ -150,7 +151,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({ item, onSuccess }) => {
                 ) : (
                   <div className="relative">
                     <Image
-                      src={filePreview}
+                      src={resolveAssetUrl(filePreview)}
                       alt="Preview"
                       fill
                       className="w-full h-48 object-cover rounded-md"
@@ -175,7 +176,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({ item, onSuccess }) => {
         />
         <Button
           type="submit"
-          className="w-full"
+          className="w-full bg-[var(--color-avocado)] hover:bg-[var(--color-rangitoto)] text-white"
           disabled={createMutation.isPending || updateMutation.isPending}
         >
           {(createMutation.isPending || updateMutation.isPending) && (

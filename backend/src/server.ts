@@ -3,13 +3,13 @@ import { config } from './lib/config';
 import { connectDb } from './lib/db';
 import { logger } from './lib/logger';
 import authRoutes from './routes/auth.routes';
-import blogRoutes from './routes/blog.routes';
 import contactRoutes from './routes/contact.routes';
 import heroRoutes from './routes/hero.routes';
 import impactRoutes from './routes/impact.routes';
 import presentationRoutes from './routes/presentation.routes';
 import serviceRoutes from './routes/service.routes';
 import teamRoutes from './routes/team.routes';
+import uploadRoutes from './routes/upload.routes';
 import usersRoutes from './routes/users.routes';
 
 // Mount routes
@@ -20,8 +20,8 @@ app.use('/api/impact', impactRoutes);
 app.use('/api/presentation', presentationRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/contact', contactRoutes);
-app.use('/api/blogs', blogRoutes);
 app.use('/api/team', teamRoutes);
+app.use('/api/uploads', uploadRoutes);
 
 async function startServer() {
   try {

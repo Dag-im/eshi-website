@@ -2,10 +2,7 @@
 
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { Particles } from '@/components/magicui/particles';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useServices } from '@/lib/api/useService';
 import { easeOut, motion } from 'framer-motion';
-import { useEffect } from 'react';
 import { BorderBeam } from '../magicui/border-beam';
 
 import { Service } from '@/types/service';
@@ -133,13 +130,11 @@ const cardVariants = {
   },
 };
 
-export default function Services() {
-  const { data: services, isLoading, error } = useServices();
+interface ServicesProps {
+  services: Service[];
+}
 
-  // Debug API response
-  useEffect(() => {
-    console.log('Services data:', services);
-  }, [services]);
+export default function Services({ services }: ServicesProps) {
 
   return (
     <section className="relative pb-16 overflow-hidden bg-transparent">
@@ -184,29 +179,7 @@ export default function Services() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7"
           variants={containerVariants}
         >
-          {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="relative p-8 bg-avocado/75 backdrop-blur-2xl rounded-3xl shadow-xl flex flex-col items-center text-center"
-              >
-                <BorderBeam
-                  size={150}
-                  duration={6}
-                  colorFrom="var(--color-indian-khaki)"
-                  colorTo="var(--color-lemon-grass)"
-                />
-                <Skeleton className="w-20 h-20 rounded-full mb-6 bg-[var(--color-rangitoto)]/10" />
-                <Skeleton className="h-6 w-32 mb-4 bg-[var(--color-rangitoto)]/10" />
-                <Skeleton className="h-4 w-48 bg-[var(--color-rangitoto)]/10" />
-                <Skeleton className="h-4 w-40 mt-2 bg-[var(--color-rangitoto)]/10" />
-              </div>
-            ))
-          ) : error ? (
-            <div className="text-center text-red-500 col-span-full">
-              Failed to load services. Please try again later.
-            </div>
-          ) : !services || services.length === 0 ? (
+          {services.length === 0 ? (
             <div className="text-center text-[var(--color-albescent-white)]/70 col-span-full">
               No services available at the moment.
             </div>

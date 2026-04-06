@@ -2,8 +2,8 @@
 'use client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { toast } from 'react-hot-toast';
 import { privateApi, publicApi } from '../axios';
+import { toast } from '../../hooks/use-toast';
 
 interface ApiErrorResponse {
   error?: {
@@ -45,12 +45,14 @@ export const useCreateService = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['services'] });
-      toast.success('Service created successfully!');
+      toast({ title: 'Service created successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to create service.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to create service',
+        description: error.response?.data?.error?.message || 'Failed to create service.',
+      });
     },
   });
 };
@@ -70,12 +72,14 @@ export const useUpdateService = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['services'] });
-      toast.success('Service updated successfully!');
+      toast({ title: 'Service updated successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to update service.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to update service',
+        description: error.response?.data?.error?.message || 'Failed to update service.',
+      });
     },
   });
 };
@@ -88,12 +92,14 @@ export const useDeleteService = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['services'] });
-      toast.success('Service deleted successfully!');
+      toast({ title: 'Service deleted successfully' });
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to delete service.'
-      );
+      toast({
+        variant: 'destructive',
+        title: 'Failed to delete service',
+        description: error.response?.data?.error?.message || 'Failed to delete service.',
+      });
     },
   });
 };

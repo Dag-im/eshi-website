@@ -14,7 +14,7 @@ import { Calendar, Check, Mail } from 'lucide-react';
 import { useState } from 'react';
 
 interface ViewContactMessageProps {
-  _id: string;
+  id: number;
   name: string;
   email: string;
   message: string;
@@ -23,7 +23,7 @@ interface ViewContactMessageProps {
 }
 
 export function ViewContactMessage({
-  _id,
+  id,
   name,
   email,
   message,
@@ -35,7 +35,7 @@ export function ViewContactMessage({
 
   const handleMarkAsSeen = async () => {
     try {
-      await markSeenMutation.mutateAsync(_id);
+      await markSeenMutation.mutateAsync(String(id));
       setIsSeen(true);
     } catch (err) {
       console.error('Failed to mark message as seen:', err);

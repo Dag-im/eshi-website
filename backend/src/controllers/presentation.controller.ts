@@ -15,16 +15,18 @@ export async function getPresentation(req: Request, res: Response) {
 
 export async function createPresentation(req: Request, res: Response) {
   const data = req.body;
+  const file = req.file;
   const userId = (req as any).user.id;
-  const presentation = await presentationService.createPresentation(data, userId);
+  const presentation = await presentationService.createPresentation(data, userId, file);
   res.status(201).json(presentation);
 }
 
 export async function updatePresentation(req: Request, res: Response) {
   const { id } = req.params;
   const data = req.body;
+  const file = req.file;
   const userId = (req as any).user.id;
-  const presentation = await presentationService.updatePresentation(id, data, userId);
+  const presentation = await presentationService.updatePresentation(id, data, userId, file);
   res.json(presentation);
 }
 
