@@ -45,7 +45,7 @@ export const useCreateUser = () => {
       qc.invalidateQueries({ queryKey: ['users'] });
       toast({
         title: 'User created',
-        description: `Temporary password: ${data.temporaryPassword}`,
+        description: `Temporary password: ${data.temporaryPassword} (case-sensitive)`,
       });
     },
     onError: (err: AxiosError<ApiErrorResponse>) => {

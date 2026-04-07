@@ -1,9 +1,14 @@
 // src/services/user.service.ts
 import bcrypt from 'bcryptjs';
 import { UserEntity } from '../entities/user.entity';
+import { DEFAULT_TEMP_PASSWORD } from '../lib/auth-defaults';
 import { CustomError } from '../lib/jwt';
 import { logger } from '../lib/logger';
 import { getRepository } from '../lib/repository';
+
+function normalizeEmail(email: string) {
+  return email.trim().toLowerCase();
+}
 
 export async function getUsers() {
   return getRepository(UserEntity).find({
@@ -55,15 +60,16 @@ export async function createUser(
   adminId: string
 ) {
   const repo = getRepository(UserEntity);
-  const existing = await repo.findOne({ where: { email: data.email } });
+  const normalizedEmail = normalizeEmail(data.email);
+  const existing = await repo.findOne({ where: { email: normalizedEmail } });
   if (existing) throw new CustomError('Email already in use.', 400);
 
-  const temporaryPassword = 'ADMIN@123';
+  const temporaryPassword = DEFAULT_TEMP_PASSWORD;
   const passwordHash = await bcrypt.hash(temporaryPassword, 10);
 
   const user = await repo.save(repo.create({
     name: data.name,
-    email: data.email,
+    email: normalizedEmail,
     passwordHash,
     isActive: data.isActive ?? true,
     role: 'admin',
@@ -98,10 +104,12 @@ export async function updateUser(
   }
 
   if (data.email && data.email !== user.email) {
-    const existing = await repo.findOne({ where: { email: data.email } });
+    const normalizedEmail = normalizeEmail(data.email);
+    const existing = await repo.findOne({ where: { email: normalizedEmail } });
     if (existing && existing.id !== user.id) {
       throw new CustomError('Email already in use.', 400);
     }
+    data.email = normalizedEmail;
   }
 
   const updates = Object.fromEntries(
@@ -143,7 +151,7 @@ export async function deleteUser(id: string, adminId: string) {
 
 // services/user.service.ts
 export async function resetUserPassword(userId: string, adminId: string) {
-  const defaultPassword = 'ADMIN@123'; // or configurable from env
+  const defaultPassword = DEFAULT_TEMP_PASSWORD;
   const passwordHash = await bcrypt.hash(defaultPassword, 10);
 
   const repo = getRepository(UserEntity);

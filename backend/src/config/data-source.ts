@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import path from 'path';
 import { DataSource } from 'typeorm';
 import { ContactMessageEntity } from '../entities/contact-message.entity';
 import { HeroEntity } from '../entities/hero.entity';
@@ -10,6 +11,8 @@ import { TeamMemberEntity } from '../entities/team-member.entity';
 import { UserEntity } from '../entities/user.entity';
 
 // MIGRATION: initialize TypeORM alongside Mongoose during the staged MySQL rollout.
+const migrationsPath = path.join(__dirname, '..', 'database', 'migrations', '*.{js,ts}');
+
 export const AppDataSource = new DataSource({
   type: 'mysql',
   host: config.DB_HOST,
@@ -26,7 +29,7 @@ export const AppDataSource = new DataSource({
     HeroEntity,
     PresentationEntity,
   ],
-  migrations: ['src/database/migrations/*.ts'],
+  migrations: [migrationsPath],
   synchronize: false,
   logging: false,
 });

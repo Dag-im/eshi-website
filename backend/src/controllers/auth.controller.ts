@@ -95,9 +95,18 @@ export async function logout(req: Request, res: Response) {
 
 export async function resetPassword(req: Request, res: Response) {
   const { userId, newPassword } = req.body;
+  const authenticatedUser = (req as any).user;
 
   if (!userId || !newPassword) {
     throw new CustomError('User ID and new password are required.', 400);
+  }
+
+  if (!authenticatedUser?.sub) {
+    throw new CustomError('Authentication required.', 401);
+  }
+
+  if (String(authenticatedUser.sub) !== String(userId)) {
+    throw new CustomError('You can only change your own password.', 403);
   }
 
   await authService.resetPassword(userId, newPassword);

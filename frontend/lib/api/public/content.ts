@@ -16,9 +16,7 @@ function getApiBaseUrl() {
 
 async function fetchPublic<T>(path: string, revalidate = PUBLIC_REVALIDATE_SECONDS): Promise<T> {
   const baseUrl = getApiBaseUrl();
-  const response = await fetch(`${baseUrl}${path}`, {
-    next: { revalidate },
-  });
+  const response = await fetch(`${baseUrl}${path}`, revalidate <= 0 ? { cache: 'no-store' } : { next: { revalidate } });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch ${path}: ${response.status}`);
@@ -28,21 +26,43 @@ async function fetchPublic<T>(path: string, revalidate = PUBLIC_REVALIDATE_SECON
 }
 
 export async function getHeroData() {
-  return fetchPublic<HeroRecord>('/hero');
+  // Hero edits should appear immediately after admin updates/deletes images.
+  // If upstream is temporarily unavailable/rate-limited, fall back gracefully.
+  try {
+    return await fetchPublic<HeroRecord>('/hero', 0);
+  } catch {
+    return null;
+  }
 }
 
 export async function getServicesData() {
-  return fetchPublic<Service[]>('/services');
+  try {
+    return await fetchPublic<Service[]>('/services');
+  } catch {
+    return [];
+  }
 }
 
 export async function getTeamData() {
-  return fetchPublic<TeamMember[]>('/team');
+  try {
+    return await fetchPublic<TeamMember[]>('/team');
+  } catch {
+    return [];
+  }
 }
 
 export async function getPresentationsData() {
-  return fetchPublic<Presentation[]>('/presentation');
+  try {
+    return await fetchPublic<Presentation[]>('/presentation');
+  } catch {
+    return [];
+  }
 }
 
 export async function getImpactsData() {
-  return fetchPublic<Impact[]>('/impact');
+  try {
+    return await fetchPublic<Impact[]>('/impact');
+  } catch {
+    return [];
+  }
 }

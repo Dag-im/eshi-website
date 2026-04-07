@@ -61,6 +61,9 @@ const globalLimiter = rateLimit({
   message: { error: 'Too many requests, try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
+  // Avoid throttling public/read traffic (hero data, uploaded media, etc.).
+  // Auth and sensitive routes already have dedicated stricter limiters.
+  skip: (req) => ['GET', 'HEAD', 'OPTIONS'].includes(req.method),
 });
 app.use('/api', globalLimiter);
 

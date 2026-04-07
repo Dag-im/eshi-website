@@ -1,7 +1,7 @@
 import ClientQueryProvider from '@/components/ClientQueryProvider';
 import { Toaster } from '@/components/ui/toaster';
-import { Geist, Geist_Mono } from 'next/font/google';
 import { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
 const geistSans = Geist({
@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://eshi.org'),
+  metadataBase: new URL('https://eshiconsultancy.org'),
   title: {
     default: 'ESHI Consultancy',
     template: '%s | ESHI Consultancy',
@@ -34,6 +34,11 @@ export const metadata: Metadata = {
     title: 'ESHI Consultancy',
     description:
       'Capacity building and organizational development for grassroots organizations.',
+  },
+  icons: {
+    icon: '/eshi.png',
+    shortcut: '/eshi.png',
+    apple: '/eshi.png',
   },
 };
 

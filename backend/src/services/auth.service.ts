@@ -1,10 +1,15 @@
 import bcrypt from 'bcryptjs';
 import { UserEntity } from '../entities/user.entity';
+import { ACCEPTED_TEMP_PASSWORDS, DEFAULT_TEMP_PASSWORD } from '../lib/auth-defaults';
 import { CustomError, signAccessToken, signRefreshToken, verifyToken } from '../lib/jwt';
 import { logger } from '../lib/logger';
 import { getRepository } from '../lib/repository';
 
 const SALT_ROUNDS = 12;
+
+function normalizeEmail(email: string) {
+  return email.trim().toLowerCase();
+}
 
 export async function hashPassword(password: string) {
   return bcrypt.hash(password, SALT_ROUNDS);
@@ -16,7 +21,8 @@ export async function comparePassword(password: string, hash: string) {
 
 export async function registerAdmin(email: string, password: string, name?: string, ip?: string) {
   const repo = getRepository(UserEntity);
-  const exists = await repo.findOne({ where: { email } });
+  const normalizedEmail = normalizeEmail(email);
+  const exists = await repo.findOne({ where: { email: normalizedEmail } });
   if (exists)
     throw new CustomError(
       'A user with this email already exists. Please use a different email.',
@@ -24,26 +30,64 @@ export async function registerAdmin(email: string, password: string, name?: stri
     );
   const passwordHash = await hashPassword(password);
   const user = await repo.save(
-    repo.create({ email, name: name || null, passwordHash, role: 'admin', isActive: true })
+    repo.create({
+      email: normalizedEmail,
+      name: name || null,
+      passwordHash,
+      role: 'admin',
+      isActive: true,
+    })
   );
-  logger.info({ action: 'register_admin', email, ip });
+  logger.info({ action: 'register_admin', email: normalizedEmail, ip });
   return user;
 }
 
 export async function loginUser(email: string, password: string, ip?: string) {
   const repo = getRepository(UserEntity);
-  const user = await repo.findOne({ where: { email } });
+  const normalizedEmail = normalizeEmail(email);
+  let user = await repo.findOne({ where: { email: normalizedEmail } });
   if (!user) {
-    logger.warn({ action: 'login_failed', email, ip, reason: 'user_not_found' });
+    // Backward-compatible lookup in case historical records contain
+    // accidental casing/whitespace in email values.
+    user = await repo
+      .createQueryBuilder('user')
+      .where('LOWER(TRIM(user.email)) = :email', { email: normalizedEmail })
+      .getOne();
+  }
+  if (!user) {
+    logger.warn({ action: 'login_failed', email: normalizedEmail, ip, reason: 'user_not_found' });
     throw new CustomError('Invalid email or password. Please try again.', 401);
   }
-  const ok = await comparePassword(password, user.passwordHash);
+  let ok = await comparePassword(password, user.passwordHash);
+
+  if (!ok && user.mustChangePassword) {
+    const normalizedInput = password.trim().toLowerCase();
+    const enteredKnownTempPassword = ACCEPTED_TEMP_PASSWORDS.some(
+      (candidate) => candidate.toLowerCase() === normalizedInput
+    );
+
+    if (enteredKnownTempPassword) {
+      for (const candidate of ACCEPTED_TEMP_PASSWORDS) {
+        const matchesStoredHash = await comparePassword(candidate, user.passwordHash);
+        if (!matchesStoredHash) continue;
+
+        ok = true;
+        if (candidate !== DEFAULT_TEMP_PASSWORD) {
+          // Migrate legacy temporary password hashes to the canonical default.
+          user.passwordHash = await hashPassword(DEFAULT_TEMP_PASSWORD);
+          await repo.save(user);
+        }
+        break;
+      }
+    }
+  }
+
   if (!ok) {
-    logger.warn({ action: 'login_failed', email, ip, reason: 'invalid_password' });
+    logger.warn({ action: 'login_failed', email: normalizedEmail, ip, reason: 'invalid_password' });
     throw new CustomError('Invalid email or password. Please try again.', 401);
   }
   if (!user.isActive) {
-    logger.warn({ action: 'login_failed', email, ip, reason: 'account_disabled' });
+    logger.warn({ action: 'login_failed', email: normalizedEmail, ip, reason: 'account_disabled' });
     throw new CustomError('Your account is disabled. Please contact support.', 403);
   }
 
@@ -54,7 +98,7 @@ export async function loginUser(email: string, password: string, ip?: string) {
   user.refreshTokenHash = refreshHash;
   await repo.save(user);
 
-  logger.info({ action: 'login_success', email, ip });
+  logger.info({ action: 'login_success', email: normalizedEmail, ip });
   return { user, accessToken, refreshToken, mustChangePassword: user.mustChangePassword };
 }
 

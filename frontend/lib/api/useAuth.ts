@@ -72,8 +72,9 @@ export const useLoginMutation = () => {
       email: string;
       password: string;
     }) => {
+      const normalizedEmail = email.trim().toLowerCase();
       const response = await privateApi.post('/auth/login', {
-        email,
+        email: normalizedEmail,
         password,
       });
       return response.data;

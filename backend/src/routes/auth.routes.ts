@@ -50,6 +50,7 @@ router.post('/logout', asyncHandler(authCtrl.logout));
 router.post(
   '/reset-password',
   resetLimiter,
+  authenticate,
   validateDto(ResetPasswordDto),
   asyncHandler(authCtrl.resetPassword)
 );
