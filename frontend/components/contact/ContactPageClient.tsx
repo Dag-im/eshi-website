@@ -16,9 +16,9 @@ import { useRef, useState } from 'react';
 const contactInfo = [
   {
     title: 'Email',
-    value: 'info@eshi.org',
+    value: 'info@eshiconsultancy.org',
     icon: <Mail className="w-6 h-6 text-avocado" />,
-    link: 'mailto:info@eshi.org',
+    link: 'mailto:info@eshiconsultancy.org',
   },
   {
     title: 'Phone',
@@ -59,7 +59,9 @@ export default function ContactPageClient() {
     email: '',
     message: '',
   });
-  const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(null);
+  const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(
+    null
+  );
   const { mutate: submitContact, isPending: isSubmitting } = useSubmitContact();
 
   const handleInputChange = (
@@ -168,7 +170,9 @@ export default function ContactPageClient() {
                       {info.icon}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-rangitoto">{info.title}</h3>
+                      <h3 className="font-semibold text-rangitoto">
+                        {info.title}
+                      </h3>
                       <a
                         href={info.link}
                         className="text-lemon-grass hover:text-avocado transition-colors block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-avocado rounded-sm"
