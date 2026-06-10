@@ -4,7 +4,13 @@ import ClientsSection from '@/components/about/ClientsSection';
 import TeamSection from '@/components/about/TeamSection';
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { Particles } from '@/components/magicui/particles';
-import { getPresentationsData, getTeamData } from '@/lib/api/public/content';
+import {
+  getApproachesData,
+  getBeliefsData,
+  getMissionStoriesData,
+  getPresentationsData,
+  getTeamData,
+} from '@/lib/api/public/content';
 import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,9 +38,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [teamMembers, presentations] = await Promise.all([
+  const [teamMembers, presentations, approaches, missionStories, beliefs] = await Promise.all([
     getTeamData(),
     getPresentationsData(),
+    getApproachesData(),
+    getMissionStoriesData(),
+    getBeliefsData(),
   ]);
 
   return (
@@ -73,7 +82,7 @@ export default async function AboutPage() {
           </p>
         </div>
 
-        <BentoGridSection />
+        <BentoGridSection missionStories={missionStories ?? []} beliefs={beliefs ?? []} />
 
         {/* Team Section */}
         <TeamSection teamMembers={teamMembers ?? []} />
@@ -82,7 +91,7 @@ export default async function AboutPage() {
         <ClientsSection presentations={presentations ?? []} />
 
         {/* Presentations Section */}
-        <ApproachsSection />
+        <ApproachsSection approaches={approaches ?? []} />
       </div>
     </section>
   );

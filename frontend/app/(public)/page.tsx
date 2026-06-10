@@ -2,7 +2,12 @@ import AboutEshi from '@/components/home/about';
 import CallToAction from '@/components/home/callToAction';
 import Hero from '@/components/home/hero';
 import Services from '@/components/home/services';
-import { getHeroData, getServicesData } from '@/lib/api/public/content';
+import {
+  getAboutData,
+  getHeroContentData,
+  getHeroData,
+  getServicesData,
+} from '@/lib/api/public/content';
 import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -30,12 +35,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [hero, services] = await Promise.all([getHeroData(), getServicesData()]);
+  const [hero, heroContent, aboutData, services] = await Promise.all([
+    getHeroData(),
+    getHeroContentData(),
+    getAboutData(),
+    getServicesData(),
+  ]);
+  const activeHeroContent = heroContent?.[0] || null;
+  const activeAbout = aboutData?.[0] || null;
 
   return (
     <main className="bg-green-50/50">
-      <Hero bgImages={hero?.bgImages} />
-      <AboutEshi />
+      <Hero bgImages={hero?.bgImages} content={activeHeroContent} />
+      <AboutEshi about={activeAbout} />
       <Services services={services ?? []} />
       <CallToAction />
       {/* Other sections */}

@@ -4,7 +4,7 @@ import { useState } from "react"
 
 import { AdminAuthGuard } from "@/components/admin/auth-guard"
 import { AdminNavbar } from "@/components/admin/navbar"
-import { AdminSidebar } from "@/components/admin/sidebar"
+import { AdminSidebar } from "@/components/admin/SideBar"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { useAuthQuery } from "@/lib/api/useAuth"
 

@@ -1,12 +1,17 @@
 import { AuroraText } from '@/components/magicui/aurora-text';
-import { BorderBeam } from '@/components/magicui/border-beam';
 
 import { Particles } from '@/components/magicui/particles';
 import CallToAction from '@/components/services/CallToAction';
 import ImpactSection from '@/components/services/ImpactSection';
+import MethodologySection from '@/components/services/Phases';
+import ServicesGridSection from '@/components/services/ServiceGridSetion';
 import WhyChooseESHI from '@/components/services/WhyChooseEshi';
-import { Card, CardContent } from '@/components/ui/card';
-import { getImpactsData } from '@/lib/api/public/content';
+import {
+  getImpactsData,
+  getMethodologyPhasesData,
+  getServiceCardsData,
+  getWhyChooseReasonsData,
+} from '@/lib/api/public/content';
 import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -34,7 +39,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ServicesPage() {
-  const impacts = await getImpactsData();
+  const [impacts, serviceCards, methodology, whyChoose] = await Promise.all([
+    getImpactsData(),
+    getServiceCardsData(),
+    getMethodologyPhasesData(),
+    getWhyChooseReasonsData(),
+  ]);
 
   return (
     <div className="min-h-screen bg-green-50/50 text-rangitoto">
@@ -48,7 +58,7 @@ export default async function ServicesPage() {
           refresh
         />
 
-        <h1 className="relative z-10 text-5xl md:text-6xl font-extrabold mb-6 pt-12">
+        <h1 className="relative z-10 text-5xl md:text-6xl font-extrabold pt-20">
           <AuroraText
             className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[var(--color-rangitoto)]"
             colors={[
@@ -61,113 +71,16 @@ export default async function ServicesPage() {
             Our Services
           </AuroraText>
         </h1>
-        <p className="relative z-10 max-w-2xl text-lg text-lemon-grass">
-          At ESHI, we focus on strengthening grassroots organizations by
-          building their{' '}
-          <span className="font-semibold">internal capacity</span>—not
-          dependency on external consultants.
-        </p>
       </section>
 
       {/* Service Categories */}
-      <section className="max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {[
-          {
-            title: 'Capacity Building Programs',
-            points: [
-              'Project Cycle Management workshops',
-              'Monitoring & Evaluation trainings',
-            ],
-          },
-          {
-            title: 'Organizational Strengthening',
-            points: [
-              'Administrative tools & NGO methodology',
-              'Grant readiness & fundraising support',
-            ],
-          },
-          {
-            title: 'Consulting Services',
-            points: [
-              'External consultant role (when required)',
-              'Emphasis on building internal skills',
-            ],
-          },
-        ].map((service) => (
-          <div key={service.title} className="relative">
-            <Card className="relative z-10 rounded-2xl shadow-xl bg-deco/40 hover:bg-deco/60 transition">
-              <BorderBeam
-                size={150}
-                duration={8}
-                className="absolute inset-0 z-0"
-                colorFrom="var(--color-deco)"
-                colorTo="var(--color-avocado)"
-              />
-              <CardContent className="p-8">
-                <h3 className="text-xl font-bold mb-4">{service.title}</h3>
-                <ul className="space-y-2 text-rangitoto/80">
-                  {service.points.map((point) => (
-                    <li key={point}>• {point}</li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        ))}
+      <section>
+        <ServicesGridSection services={serviceCards ?? []} />
       </section>
 
       {/* Process / Methodology */}
-      <section className="py-24 px-6">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-6">
-            Our Methodology
-          </h2>
-          <p className="mb-12 text-lg text-rangitoto/80">
-            A two-phase approach designed to embed knowledge into daily
-            operations.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-            <div className="relative">
-              <Card className="relative z-10 rounded-xl shadow-md bg-deco/30 border">
-                <BorderBeam
-                  size={200}
-                  duration={10}
-                  className="absolute inset-0 z-0"
-                  colorFrom="var(--color-avocado)"
-                  colorTo="var(--color-deco)"
-                />
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-3">Phase 1</h3>
-                  <p>
-                    Four-month intensive workshops (in-person + Zoom) covering:
-                  </p>
-                  <ul className="list-disc ml-6 mt-3 space-y-1">
-                    <li>Indicators & data collection</li>
-                    <li>Survey design</li>
-                    <li>Visualization & evaluation</li>
-                    <li>Donor reporting</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-            <Card className="relative z-10 rounded-xl shadow-md bg-deco/30">
-              <BorderBeam
-                size={200}
-                duration={10}
-                className="absolute inset-0 z-0"
-                colorFrom="var(--color-avocado)"
-                colorTo="var(--color-deco)"
-              />
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold mb-3">Phase 2</h3>
-                <p>
-                  Eight-month follow-up ensuring workshop principles are applied
-                  in daily work, with coaching and mentorship.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+      <section>
+        <MethodologySection phases={methodology ?? []} />
       </section>
 
       {/* Impact */}
@@ -177,7 +90,7 @@ export default async function ServicesPage() {
 
       {/* Why ESHI */}
       <section>
-        <WhyChooseESHI />
+        <WhyChooseESHI reasons={whyChoose ?? []} />
       </section>
 
       {/* CTA */}

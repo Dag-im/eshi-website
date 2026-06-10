@@ -2,6 +2,7 @@
 
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { resolveAssetUrl } from '@/lib/utils';
+import { HeroContentRecord } from '@/types/hero-content';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,10 +10,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface HeroProps {
   bgImages?: { src: string; alt: string }[];
+  content?: HeroContentRecord | null;
 }
 
 export default function Hero({
   bgImages = [],
+  content = null,
 }: HeroProps) {
   const [failedImageSources, setFailedImageSources] = useState<string[]>([]);
 
@@ -82,6 +85,13 @@ export default function Hero({
     }, 6000);
     return () => clearInterval(id);
   }, [len, goTo]);
+
+  const title = content?.title?.trim() || 'ESHI Consultancy';
+  const subtitle =
+    content?.subtitle?.trim() || 'Building Capacity for Local Grassroots Organizations';
+  const description =
+    content?.description?.trim() ||
+    'ESHI has two meanings: E.S.H.I. began as an acronym for Ethiopian Self-Help Initiative, but as our intention was always to work globally, we now respond to Eshi, an everyday Ethiopian expression that means, “ok, cool.”';
 
   return (
     <section className="relative w-full h-screen overflow-hidden pt-10 bg-black">
@@ -157,7 +167,7 @@ export default function Hero({
             ]}
             speed={1.5}
           >
-            ESHI Consultancy
+            {title}
           </AuroraText>
         </h1>
 
@@ -167,7 +177,7 @@ export default function Hero({
           transition={{ delay: 0.4, duration: 0.8 }}
           className="text-3xl md:text-5xl font-semibold mb-6 text-indian-khaki drop-shadow-lg"
         >
-          Building Capacity for Local Grassroots Organizations
+          {subtitle}
         </motion.h2>
 
         <motion.p
@@ -176,10 +186,7 @@ export default function Hero({
           transition={{ delay: 0.6, duration: 0.8 }}
           className="max-w-3xl text-albescent-white mb-8 drop-shadow-md"
         >
-          ESHI has two meanings: E.S.H.I. began as an acronym for Ethiopian
-          Self-Help Initiative, but as our intention was always to work
-          globally, we now respond to Eshi, an everyday Ethiopian expression
-          that means, “ok, cool.”
+          {description}
         </motion.p>
 
         <motion.div

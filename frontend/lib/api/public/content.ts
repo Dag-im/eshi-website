@@ -1,8 +1,16 @@
 import { HeroRecord } from '@/types/hero';
+import { HeroContentRecord } from '@/types/hero-content';
 import { Impact } from '@/types/impact';
+import { AboutRecord } from '@/types/about';
+import { Approach } from '@/types/approach';
+import { MethodologyPhase } from '@/types/methodology-phase';
+import { MissionStoryRecord } from '@/types/mission-story';
 import { Presentation } from '@/types/presentaion';
+import { ServiceCard } from '@/types/service-card';
 import { Service } from '@/types/service';
 import { TeamMember } from '@/types/team';
+import { WhyChooseReason } from '@/types/why-choose-reason';
+import { BeliefRecord } from '@/types/belief';
 
 const PUBLIC_REVALIDATE_SECONDS = 300;
 
@@ -35,6 +43,22 @@ export async function getHeroData() {
   }
 }
 
+export async function getHeroContentData() {
+  try {
+    return await fetchPublic<HeroContentRecord[]>('/hero-content', 0);
+  } catch {
+    return [];
+  }
+}
+
+export async function getAboutData() {
+  try {
+    return await fetchPublic<AboutRecord[]>('/about');
+  } catch {
+    return [];
+  }
+}
+
 export async function getServicesData() {
   try {
     return await fetchPublic<Service[]>('/services');
@@ -62,6 +86,54 @@ export async function getPresentationsData() {
 export async function getImpactsData() {
   try {
     return await fetchPublic<Impact[]>('/impact');
+  } catch {
+    return [];
+  }
+}
+
+export async function getApproachesData() {
+  try {
+    return await fetchPublic<Approach[]>('/approaches');
+  } catch {
+    return [];
+  }
+}
+
+export async function getMissionStoriesData() {
+  try {
+    return await fetchPublic<MissionStoryRecord[]>('/mission-story');
+  } catch {
+    return [];
+  }
+}
+
+export async function getBeliefsData() {
+  try {
+    return await fetchPublic<BeliefRecord[]>('/beliefs');
+  } catch {
+    return [];
+  }
+}
+
+export async function getMethodologyPhasesData() {
+  try {
+    return await fetchPublic<MethodologyPhase[]>('/methodology-phases');
+  } catch {
+    return [];
+  }
+}
+
+export async function getServiceCardsData() {
+  try {
+    return await fetchPublic<ServiceCard[]>('/service-cards');
+  } catch {
+    return [];
+  }
+}
+
+export async function getWhyChooseReasonsData() {
+  try {
+    return await fetchPublic<WhyChooseReason[]>('/why-choose-reasons');
   } catch {
     return [];
   }

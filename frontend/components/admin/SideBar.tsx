@@ -3,12 +3,15 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
+  BookOpen,
   BriefcaseBusiness,
   ChevronLeft,
   ChevronRight,
+  FileText,
   ImageIcon,
   Inbox,
   LayoutDashboard,
+  MessageSquareQuote,
   Presentation,
   ShieldCheck,
   Sparkles,
@@ -21,6 +24,14 @@ import { cn } from "@/lib/utils"
 const navigation = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/hero", label: "Hero", icon: ImageIcon },
+  { href: "/admin/hero-content", label: "Hero Content", icon: MessageSquareQuote },
+  { href: "/admin/about", label: "About", icon: FileText },
+  { href: "/admin/beliefs", label: "Beliefs", icon: Sparkles },
+  { href: "/admin/mission-story", label: "Mission & Story", icon: MessageSquareQuote },
+  { href: "/admin/approaches", label: "Approaches", icon: BookOpen },
+  { href: "/admin/methodology", label: "Methodology", icon: FileText },
+  { href: "/admin/service-cards", label: "Service Cards", icon: BriefcaseBusiness },
+  { href: "/admin/why-choose", label: "Why Choose", icon: Sparkles },
   { href: "/admin/users", label: "Users", icon: ShieldCheck },
   { href: "/admin/services", label: "Services", icon: BriefcaseBusiness },
   { href: "/admin/team", label: "Team", icon: Users },

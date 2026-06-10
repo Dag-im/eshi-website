@@ -1,30 +1,31 @@
 'use client';
 
 import { BorderBeam } from '@/components/magicui/border-beam';
+import { WhyChooseReason } from '@/types/why-choose-reason';
 import { motion, useInView } from 'framer-motion';
-import { Globe, Handshake, Landmark, Sprout } from 'lucide-react';
+import { BarChart, BookOpen, Globe, Handshake, Landmark, Lightbulb, Sprout, Target, Users } from 'lucide-react';
 import { useRef } from 'react';
 
-const reasons = [
+const fallbackReasons = [
   {
     title: 'Grassroots Orientation & Localization',
-    desc: 'Deeply rooted in local communities, we tailor solutions to cultural and regional needs, ensuring authentic impact.',
-    icon: <Globe className="w-8 h-8 text-avocado" />,
+    description: 'Deeply rooted in local communities, we tailor solutions to cultural and regional needs, ensuring authentic impact.',
+    icon: 'Globe',
   },
   {
     title: 'Long-Term Sustainability Focus',
-    desc: 'Our initiatives are designed for enduring change, empowering communities to thrive independently.',
-    icon: <Sprout className="w-8 h-8 text-avocado" />,
+    description: 'Our initiatives are designed for enduring change, empowering communities to thrive independently.',
+    icon: 'Sprout',
   },
   {
     title: 'Real Partnership, Not Dependency',
-    desc: 'We foster collaborative relationships that amplify local voices and build capacity, not reliance.',
-    icon: <Handshake className="w-8 h-8 text-avocado" />,
+    description: 'We foster collaborative relationships that amplify local voices and build capacity, not reliance.',
+    icon: 'Handshake',
   },
   {
     title: 'Decades of Experience with NGOs & CSOs',
-    desc: 'Our extensive expertise ensures strategic, impactful solutions for grassroots organizations.',
-    icon: <Landmark className="w-8 h-8 text-avocado" />,
+    description: 'Our extensive expertise ensures strategic, impactful solutions for grassroots organizations.',
+    icon: 'Landmark',
   },
 ];
 
@@ -45,9 +46,31 @@ const itemVariants = {
   hover: { y: -10, scale: 1.02, boxShadow: '0 15px 30px rgba(0, 0, 0, 0.1)' },
 };
 
-export default function WhyChooseESHI() {
+const iconMap = {
+  BarChart,
+  BookOpen,
+  Globe,
+  Handshake,
+  Landmark,
+  Lightbulb,
+  Sprout,
+  Target,
+  Users,
+};
+
+function ReasonIcon({ name }: { name?: string | null }) {
+  const Icon = iconMap[name as keyof typeof iconMap] || Globe;
+  return <Icon className="w-8 h-8 text-avocado" />;
+}
+
+interface WhyChooseESHIProps {
+  reasons?: WhyChooseReason[];
+}
+
+export default function WhyChooseESHI({ reasons = [] }: WhyChooseESHIProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const items = reasons.length ? reasons : fallbackReasons;
 
   return (
     <section className="relative py-24 px-6 bg-gradient-to-br from-indian-khaki/20 via-albescent-white/50 to-avocado/10 overflow-hidden">
@@ -86,7 +109,7 @@ export default function WhyChooseESHI() {
           animate={isInView ? 'visible' : 'hidden'}
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
-          {reasons.map((reason, i) => (
+          {items.map((reason, i) => (
             <motion.div
               key={reason.title}
               variants={itemVariants}
@@ -105,14 +128,14 @@ export default function WhyChooseESHI() {
                 />
                 <div className="relative z-10 p-8 flex flex-col items-start text-left">
                   {/* Icon */}
-                  <div className="mb-4">{reason.icon}</div>
+                  <div className="mb-4"><ReasonIcon name={reason.icon} /></div>
                   {/* Title */}
                   <h3 className="text-xl font-bold text-rangitoto mb-2 group-hover:text-avocado transition-colors">
                     {reason.title}
                   </h3>
                   {/* Description */}
                   <p className="text-sm text-rangitoto/70 leading-relaxed">
-                    {reason.desc}
+                    {reason.description}
                   </p>
                 </div>
               </div>

@@ -5,6 +5,7 @@ import { BorderBeam } from '@/components/magicui/border-beam';
 import { OrbitingCircles } from '@/components/magicui/orbiting-circles';
 import { Particles } from '@/components/magicui/particles';
 import { Card } from '@/components/ui/card';
+import { AboutRecord } from '@/types/about';
 import { motion } from 'framer-motion';
 import { Globe as GlobeIcon, Heart, Sprout, Users } from 'lucide-react';
 
@@ -32,7 +33,14 @@ const childVariants = {
   },
 } as const;
 
-export default function AboutEshi() {
+interface AboutEshiProps {
+  about?: AboutRecord | null;
+}
+
+export default function AboutEshi({ about = null }: AboutEshiProps) {
+  const title = about?.title?.trim() || 'ABOUT ESHI';
+  const paragraphs = about?.paragraphs?.length ? about.paragraphs : aboutParagraphs;
+
   return (
     <section className="relative py-32 overflow-hidden bg-transparent">
       {/* Particles */}
@@ -85,7 +93,7 @@ export default function AboutEshi() {
                 ]}
                 speed={1}
               >
-                ABOUT ESHI
+                {title}
               </AuroraText>
             </motion.div>
           </div>
@@ -103,7 +111,7 @@ export default function AboutEshi() {
               colorFrom="var(--color-indian-khaki)"
               colorTo="var(--color-deco)"
             />
-            {aboutParagraphs.map((para, i) => (
+            {paragraphs.map((para, i) => (
               <motion.p
                 key={i}
                 initial={{ opacity: 0, x: -20 }}
